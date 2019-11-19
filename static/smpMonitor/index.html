@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>监控配置页面</title>
+
+<link href="js/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link href="js/bootstrap-table-1.12.1-dist/bootstrap-table.min.css"
+	rel="stylesheet" />
+	<link rel="stylesheet" href="js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" />
+<link href="js/font-awesome-4.7.0/css/font-awesome.min.css"
+	rel="stylesheet">
+	<link rel="stylesheet" href="js/flatpickr-v4/flatpickr.min.css" />
+	<link rel="stylesheet" href="js/flatpickr-v4/dark.css" />
+<link href="css/index.css" rel="stylesheet">
+<link href="js/dropdown/jquery.dropdown.min.css" rel="stylesheet">
+<!-- 1.Jquery组件引用 -->
+<script src="js/jquery/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="js/flatpickr-v4/flatpickr.js" ></script>
+<!-- 2.bootstrap组件引用 -->
+<script src="js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<!-- 3.bootstrap table组件以及中文包的引用-->
+<script src="js/bootstrap-table-1.12.1-dist/bootstrap-table.min.js"></script>
+<script src="js/bootstrap-table-1.12.1-dist/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js" ></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker/bootstrap-datetimepicker.zh-CN.js" ></script>
+<!-- crypto-js-3.1.9-1 -->
+<script src="js/crypto-js-3.1.9-1/core.js"></script>
+<script src="js/crypto-js-3.1.9-1/crypto-js.js"></script>
+<script src="js/layer/layer.js"></script>
+<script src="js/dropdown/jquery.dropdown.min.js"></script>
+<!-- 4.自定义js -->
+<script src="js/js/common/bootbox.min.js"></script>
+<script src="js/js/common/common.js"></script>
+<script src="../config.js"></script>
+<script src="js/js/index.js"></script>
+<style>
+	  /*滚动条样式*/
+	  ::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 10px;
+}
+::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.2);
+}
+::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}
+</style>
+</head>
+<body>
+	<div class="panel-heading monitor-header" style="padding-bottom: 5px">
+		<img src="images/logo.png" style="height: 85px;" /> <img
+			src="images/logo_st.png" style="height: 85px; width: 85px">
+	</div>
+	<div class="panel-body" style="padding-bottom: 0; padding-top: 25px;">
+		<!-- 查询部分-->
+		<div class="panel panel-default" style="margin-bottom: 5px;border:none">
+			<div class="panel-heading monitor-header2">查询条件</div>
+			<div class="panel-body">
+				<input type="hidden" name="key" id="key">
+				<form id="formSearch" class="form-horizontal">
+					<div class="form-group" style="margin-top: 15px">
+						<label class="control-label col-sm-1" for="txt_search_name">监控名称：</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control close_value" required="required"
+								id="txt_search_name" title="请输入要查询的关键字，支持模糊查询" placeholder="请输入关键字">
+							<div class="close_icon">
+								<!--<img src="images/close.png" />-->
+							</div>
+						</div>
+						<label class="control-label col-sm-1" for="txt_search_appname">系统名称：</label>
+						<div class="col-sm-2">
+							<input type="text" required="required" class="form-control close_value"
+								id="txt_search_appname" title="请输入要查询的关键字，支持模糊查询" placeholder="请输入关键字">
+							<div class="close_icon">
+								<!--<img src="images/close.png" />-->
+							</div>
+						</div>
+						<label class="control-label col-sm-1" for="txt_search_type">监控类型：</label>
+						<div class="col-sm-2">
+							<select class="form-control" id="txt_search_type">
+								<option value="" style="color：#1D2437">请选择</option>
+								<option value="url">URL页面监控</option>
+								<option value="interface">URL接口监控</option>
+								<option value="db">数据库监控</option>
+								<option value="tcp">tcp连接监控</option>
+								<option value="file">文件监控</option>
+								<option value="email">邮件监控</option>
+								<option value="task">定时任务监控</option>
+								<option value="dubbo">DUBBO监控</option>
+							</select>
+						</div>
+						<label class="control-label col-sm-1" for="txt_search_state">监控状态：</label>
+						<div class="col-sm-2">
+							<select class="form-control" id="txt_search_state">
+								<option value="">请选择</option>
+								<option value="Y">运行</option>
+								<option value="N">停止</option>
+							</select>
+						</div>
+						<br /> <br /> <br /> <br />
+						<div class="col-sm-12" style="text-align: center;">
+							<button type="button" style="margin-left: 100px; width: 100px"
+								id="btn_query" class="btn btn-primary">查询</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- 操作部分-->
+		<div id="toolbar" class="btn-group">
+			<button id="btn_add" type="button" class="btn btn-default">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true">新增</span>
+			</button>
+			<button id="btn_edit" type="button" class="btn btn-default">
+				<span class="glyphicon glyphicon-pencil" aria-hidden="true">修改</span>
+			</button>
+			<button id="btn_delete" type="button" class="btn btn-default">
+				<span class="glyphicon glyphicon-remove" aria-hidden="true">删除</span>
+			</button>
+			<button id="btn_batch_import" type="button" class="btn btn-default">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true">批量导入</span>
+			</button>
+		</div>
+
+		<!-- 展示部分-->
+		<table id="tb_departments" style="table-layout: fixed;"></table>
+		<div>
+			<!--批量导入弹出框-->
+			<div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+				aria-labelledby="myModalLabel1" aria-hidden="true"
+				data-backdrop="static">
+				<div class="modal-dialog" style="width: 40%;">
+					<div class="modal-content">
+						<!-- 弹出面板头部-->
+						<div class="modal-header">
+							<h4 class="modal-title" id="myModalLabel1">
+								<!-- 标题-->
+							</h4>
+						</div>
+
+						<div class="modal-body">
+							<div class="form-group" style="margin-top: 15px">
+								<div class="input-group length-5"
+									style="margin-top: 5px; padding-left: 8%">
+									<input type="file" id="file" name="file" style="display: none"
+										onchange="changeFileName()"> <span
+										class="input-group-addon" id="choose"
+										style="cursor: pointer;"><i
+										class="fa fa-folder-open"></i>选择文件</span> <input id="photoCover"
+										class="form-control" type="text" readonly
+										>
+								</div>
+								<div class="input-group length-5"
+									style="margin-top: 5px; padding-left: 8%">
+									<a href="南航批量导入模板.xlsx">模板下载</a>
+								</div>
+							</div>
+						</div>
+
+						<!-- 弹出面板底部-->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal" id="close1">关闭</button>
+							<button type="button" class="btn btn-primary" id="import">
+								导入</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<!--报错详情弹出框-->
+			<div style="z-index: 1051" class="modal fade" id="detailModal"
+				tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
+				aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog" style="width: 70%;">
+					<div class="modal-content">
+						<!-- 弹出面板头部-->
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&nbsp;X&nbsp;</button>
+							<h4 class="modal-title">报错信息详情</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group" style="margin-top: 15px">
+								<span id="detailMessage"></span>
+							</div>
+						</div>
+
+						<!-- 弹出面板底部-->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<!-- 弹出框-->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+				aria-labelledby="myModalLabel" aria-hidden="true"
+				data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<!-- 弹出面板头部-->
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&nbsp;X&nbsp;</button>
+							<h4 class="modal-title" id="myModalLabel">
+								<!-- 标题-->
+							</h4>
+						</div>
+						<!-- 弹出面板中部-->
+						<div class="modal-body">
+							<form id="task" class="form-horizontal">
+								<div class="form-group" style="margin-top: 15px">
+									<!-- 公共部分-->
+									<div style="margin-bottom: 0" id="base">
+										<div class="col-sm-12"
+											style="margin-top: 5px; padding-left: 2%">
+											<input type="hidden" id="id"> <label
+												class="control-label col-sm-2 length-1" for="name"><span
+												class="must">*</span>监控名称</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="name"
+													title="监控名称">
+											</div>
+											<label class="control-label col-sm-2 length-1" for="type"><span
+												class="must">*</span>监控类型</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="type">
+													<option value="">请选择</option>
+													<option value="url">URL页面监控</option>
+													<option value="interface">URL接口监控</option>
+													<option value="db">数据库监控</option>
+													<option value="tcp">tcp连接监控</option>
+													<option value="file">文件监控</option>
+													<option value="email">邮件监控</option>
+													<option value="task">定时任务监控</option>
+													<option value="dubbo">DUBBO监控</option>
+												</select>
+											</div>
+											<label class="control-label col-sm-2 length-1" for="rate"><span
+												class="must">*</span>监控频率</label>
+											<div class="input-group col-sm-2 length-6"
+												style="padding-left: 15px">
+												<input type="text" class="form-control" id="rate"
+													title="单位:分钟"
+													onkeyup="if(this.value.length===1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+													onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+												<span class="input-group-addon">分钟</span>
+											</div>
+										</div>
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1" for="sys_name"><span
+												class="must">*</span>所属应用系统</label>
+											<div class="col-sm-2 length-2">
+												<!--<input type="text" class="form-control" id="sys_name"
+													title="所属应用系统名称">-->
+													<div class="selDiv" id="relationSystem"><select class="selStyle" placeholder="请选择："  ></select></div>
+											</div>
+											<label class="control-label col-sm-2 length-1"
+												for="linkperson"><span class="must">*</span>负责人</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="linkperson"
+													title="所属应用系统的负责人">
+											</div>
+											<label class="control-label col-sm-2 length-1" for="timeout">超时时间</label>
+											<div class="input-group col-sm-2 length-6"
+												style="padding-left: 15px">
+												<input type="text" class="form-control" id="timeout"
+													title="单位:毫秒"
+													onkeyup="if(this.value.length===1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+													onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+												<span class="input-group-addon">毫秒</span>
+											</div>
+										</div>
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="repeatflag">重复确认</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="repeatflag"
+													title="当发生异常时，如开启重复确认功能不会立即告警，会按照确认频率和确认次数，重复确认后发送告警。否则立即告警">
+													<option value="N">否</option>
+													<option value="Y">是</option>
+												</select>
+											</div>
+											<div id="repeatInfo" style="margin-bottom: 0; display: none">
+												<label class="control-label col-sm-2 length-1"
+													for="repeat_num"><span class="must">*</span>确认次数</label>
+												<div class="col-sm-2 length-2">
+													<input type="text" class="form-control" id="repeat_num"
+														title="单位:次"
+														onkeyup="if(this.value.length===1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+														onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+												</div>
+												<label class="control-label col-sm-2 length-1"
+													for="repeat_rate"><span class="must">*</span>确认频率</label>
+												<div class="input-group col-sm-2 length-6"
+													style="padding-left: 15px">
+													<input type="text" class="form-control" id="repeat_rate"
+														title="单位:秒/次"
+														onkeyup="if(this.value.length===1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+														onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+													<span class="input-group-addon" style="width: 10px;">秒</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- url部分 -->
+									<div style="margin-bottom: 0; display: none" id="urlInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="url_protocol">访问协议</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="url_protocol">
+													<option value="http">HTTP</option>
+													<option value="https">HTTPS</option>
+												</select>
+											</div>
+											<label class="control-label col-sm-2 length-1" for="url_url"><span
+												class="must">*</span>监控地址</label>
+											<div class="input-group col-sm-6 length-3"
+												style="padding-left: 15px">
+												<span class="input-group-addon" id="prefix">http://</span> <input
+													type="text" class="form-control" id="url_url"
+													title="例：www.csair.com/cn/index.shtml">
+											</div>
+										</div>
+									</div>
+
+									<!-- dubbob部分 -->
+									<div style="margin-bottom: 0; display: none" id="dubboInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="interface_class"><span class="must">*</span>接口服务类</label>
+											<div class="col-sm-2 length-5">
+												<input type="text" class="form-control" id="interface_class"
+													title="例:请输入数据库用户名">
+											</div>
+											<!--<label class="control-label col-sm-2 length-1" for="dubbo_url"><span
+												class="must">*</span>服务注册中心</label>
+											<div class="col-sm-2 length-4">
+												<input type="text" class="form-control" id="dubbo_url"
+													title="例:jdbc:mysql://192.168.180.92:3306/even">
+											</div>-->
+										</div>
+									</div>
+									<!-- 数据库部分-->
+									<div style="margin-bottom: 0; display: none" id="dbInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="db_username"><span class="must">*</span>用户名</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="db_username"
+													title="例:请输入数据库用户名">
+											</div>
+											<label class="control-label col-sm-2 length-1" for="db_url"><span
+												class="must">*</span>数据库地址</label>
+											<div class="col-sm-2 length-4">
+												<input type="text" class="form-control" id="db_url"
+													title="例:jdbc:mysql://192.168.180.92:3306/even">
+											</div>
+										</div>
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="db_password"><span class="must">*</span>密码</label>
+											<div class="col-sm-2 length-2">
+												<input type="password" class="form-control" id="db_password"
+													autocomplete="new-password" title="请输入数据库密码">
+											</div>
+											<label class="control-label col-sm-2 length-1" for="db_sql"><span
+												class="must">*</span>数据库表名</label>
+											<div class="col-sm-2 length-4">
+												<input type="text" class="form-control" id="db_sql"
+													title="仅支持查询语句，例: select * from user，">
+											</div>
+										</div>
+									</div>
+
+									<!-- tcp部分-->
+									<div style="margin-bottom: 0; display: none" id="tcpInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1" for="tcp_ip"><span
+												class="must">*</span>监控ip/域名</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="tcp_ip"
+													title="例：192.168.30.32 或 www.csair.com">
+											</div>
+											<label class="control-label col-sm-2 length-1" for="tcp_port"><span
+												class="must">*</span>端口号</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="tcp_port"
+													title="例：21">
+											</div>
+										</div>
+									</div>
+
+									<!-- 文件部分-->
+									<div style="margin-bottom: 0; display: none" id="fileInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="file_file_type">文件类型</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="file_file_type">
+													<option value="1">远程文件</option>
+													<option value="2">本地文件</option>
+												</select>
+											</div>
+											<label class="control-label col-sm-2 length-1" for="file_url"><span
+												class="must">*</span>文件夹路径</label>
+											<div class="col-sm-6 length-4">
+												<input type="text" class="form-control" id="file_url"
+													title="待检测文件所在的绝对路径，例：/user/ 或D:/temp/">
+											</div>
+										</div>
+										<div class="col-sm-12" style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1" for="file_ip">
+												<span class="must">*</span>文件所在服务器
+											</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="file_ip"
+													title="例：192.168.30.32 或 www.csair.com">
+											</div>
+											<label class="control-label col-sm-2 length-1"
+												for="file_monitor_type">文件监控类型</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="file_monitor_type">
+													<option value="1">按滞留时间</option>
+													<option value="2">按文件个数</option>
+												</select>
+											</div>
+											<div id="fileNum" style="display: none">
+												<label class="control-label col-sm-2 length-1" for="file_num">
+													<span class="must">*</span>文件个数
+												</label>
+												<div class="col-sm-12 length-2">
+													<input type="text" class="form-control" id="file_num"
+														title="例1">
+												</div>
+											</div>
+											<div id="fileRetentTime" >
+												<label class="control-label col-sm-2 length-1"
+													for="file_retention"><span class="must">*</span>文件滞留时间</label>
+												<div class="input-group col-sm-2 length-6"
+													style="padding-left: 15px">
+													<input type="text" class="form-control" id="file_retention"
+														title="单位:分钟"
+														onkeyup="if(this.value.length===1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+														onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+													<span class="input-group-addon" style="width: 10px;">分钟</span>
+												</div>
+											</div>
+
+										</div>
+										<!-- sart-->
+										
+										<!-- end -->
+										<div id="ftpMessage">
+											<div class="col-sm-12"
+												style="padding-top: 10px; padding-left: 2%">
+												<label class="control-label col-sm-2 length-1"
+													for="file_port"><span class="must">*</span>ftp端口号</label>
+												<div class="col-sm-2 length-2">
+													<input type="text" class="form-control" id="file_port"
+														title="请输入ftp端口号，例：21">
+												</div>
+												<label class="control-label col-sm-2 length-1"
+													for="file_username"><span class="must">*</span>ftp用户名</label>
+												<div class="col-sm-2 length-2">
+													<input type="text" class="form-control" id="file_username"
+														title="请输入ftp用户名">
+												</div>
+												<label class="control-label col-sm-2 length-1"
+													for="file_password"><span class="must">*</span>ftp密码</label>
+												<div class="col-sm-2 length-2">
+													<input type="password" autocomplete="new-password"
+														class="form-control" id="file_password" title="请输入ftp密码">
+												</div>
+											</div>
+										</div>
+										<!--  文件监控类型    -->
+										<div id="fileMonitorType" style="display: none;">
+											<div class="col-sm-12" style="padding-top: 10px; padding-left: 2%">
+												<label class="control-label col-sm-2 length-1" for="match_character"><span class="must">*</span>匹配字符</label>
+												<div class="col-sm-2 length-2">
+													<input type="text" class="form-control" id="match_character">
+												</div>
+												<label class="control-label col-sm-2 length-1" for="match_rule"><span class="must">*</span>匹配规则</label>
+												
+												<div class="col-sm-2 length-2">
+													<select class="form-control" id="match_rule">
+														<option value="大于">大于</option>
+														<option value="小于">小于</option>
+														<option value="等于">等于</option>
+														<option value="大于等于">大于等于</option>
+														<option value="小于等于">小于等于</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-12" style="padding-top: 10px; padding-left: 2%">
+												<label class="control-label col-sm-2 length-1"><span class="must">*</span>开始时间</label>
+												<div class="col-sm-2 length-2">
+													<input class="flatpickr form-control" data-enable-time=true data-max-time id="fileStartTime" name="file_start_time" />
+												</div>
+												<!--<div class='input-group date col-sm-2 length-2' id='datetimepicker1'>
+									                <input type='text' class="form-control" />
+									                <span class="input-group-addon">
+									                    <span class="glyphicon glyphicon-calendar"></span>
+									                </span>
+									            </div>-->
+												<label class="control-label col-sm-2 length-1" for="fileEndTime"><span class="must">*</span>结束时间</label>
+												<div class="col-sm-2 length-2">
+													<input type="text" class="flatpickr form-control" data-enable-time=true  data-min-time id="fileEndTime" name="file_end_time">
+												</div>
+												<!-- <div class='input-group date col-sm-2 length-2' id='2'>
+									                <input type='text' class="form-control" />
+									                <span class="input-group-addon">
+									                    <span class="glyphicon glyphicon-calendar"></span>
+									                </span>
+									            </div>-->
+											</div>
+										</div>
+									</div>
+
+									<!-- 邮件部分-->
+									<div style="margin-bottom: 0; display: none" id="emailInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1" for="email_ip"><span
+												class="must">*</span>发件服务器</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="email_ip"
+													title="例：smtp.163.com">
+											</div>
+											<label class="control-label col-sm-2 length-1"
+												for="email_port">端口号</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="email_port"
+													title="例：465">
+											</div>
+											<label class="control-label col-sm-1 length-1"
+												for="email_send_ssl">使用ssl加密</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="email_send_ssl">
+													<option value="N">不使用</option>
+													<option value="Y">使用</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-1 length-1"
+												for="email_receive_ip"><span class="must">*</span>收件服务器</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control"
+													id="email_receive_ip" title="例：pop3.163.com">
+											</div>
+											<label class="control-label col-sm-2 length-1"
+												for="email_receive_port">端口号</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control"
+													id="email_receive_port" title="例：110">
+											</div>
+											<label class="control-label col-sm-2 length-1"
+												for="email_receive_ssl">使用ssl加密</label>
+											<div class="col-sm-2 length-2">
+												<select class="form-control" id="email_receive_ssl">
+													<option value="N">不使用</option>
+													<option value="Y">使用</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-2 length-1"
+												for="email_username"><span class="must">*</span>邮箱用户名</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="email_username"
+													title="例：even@163.com">
+											</div>
+											<label class="control-label col-sm-2 length-1"
+												for="email_password"><span class="must">*</span>邮箱密码</label>
+											<div class="col-sm-2 length-2">
+												<input type="password" class="form-control"
+													autocomplete="new-password" id="email_password">
+											</div>
+										</div>
+									</div>
+
+									<!-- 定时任务部分-->
+									<div style="margin-bottom: 0; display: none" id="taskInfo">
+										<div class="col-sm-12"
+											style="padding-top: 10px; padding-left: 2%">
+											<label class="control-label col-sm-1 length-1" for="task_ip"><span
+												class="must">*</span>定时任务服务器</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control" id="task_ip"
+													title="定时任务所在服务器域名/ip">
+											</div>
+											<label class="control-label col-sm-1 length-1"
+												for="task_other_sys_id"><span class="must">*</span>定时任务编号</label>
+											<div class="col-sm-2 length-2">
+												<input type="text" class="form-control"
+													id="task_other_sys_id" title="定时任务唯一标识">
+											</div>
+										</div>
+									</div>
+
+									<!-- 公共部分-->
+									<div class="col-sm-12"
+										style="padding-top: 10px; padding-left: 2%">
+										<label class="control-label col-sm-1 length-1" for="plan">故障影响</label>
+										<div class="col-sm-10 length-5">
+											<textarea class="form-control" rows="2" id=plan></textarea>
+										</div>
+									</div>
+									<div class="col-sm-12"
+										style="padding-top: 10px; padding-left: 2%">
+										<label class="control-label col-sm-1 length-1" for="remark">故障处理</label>
+										<div class="col-sm-10 length-5">
+											<textarea class="form-control" rows="4" id=remark></textarea>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<!-- 弹出面板底部-->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal" id="close">关闭</button>
+							<button type="button" class="btn btn-danger" id="test"
+								onclick="test();">测试</button>
+							<button type="button" class="btn btn-primary" id="save"
+								onclick="save();">保存</button>
+							<button type="button" class="btn btn-primary" id="update"
+								onclick="update();">保存修改</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
