@@ -55,6 +55,9 @@ a{
     border-radius: 5px;
     background: #0c2a4c;
 }
+.btn:hover{
+    color:#ffffff;
+}
 .MessError{
     min-width: 210px;
 }

@@ -26,7 +26,7 @@
                 </tr>
                 <tr v-for="item in ShowData">
                     <td>{{item.title}}</td>
-                    <td @click="open()">{{item.text}}</td>
+                    <td @click="open()"><span class="tab_content">{{item.text}}</span></td>
                     <td>
                       <span v-if="item.severity==1">严重告警</span>
                       <span v-if="item.severity==2">主要告警</span>
@@ -163,7 +163,7 @@
         margin: 0 100px 0 17px;
       }
     }
-    .search :hover{
+    .search:hover{
         color:#ffffff;
       }
     .row2{
@@ -194,6 +194,11 @@
       }
       .page{
           margin-top:20px;
+      }
+      .tab_content{
+        cursor: pointer;
+        white-space:nowrap;         
+        text-overflow:ellipsis; 
       }
     }
     .model_content{

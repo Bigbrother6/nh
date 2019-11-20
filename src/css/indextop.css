@@ -59,9 +59,9 @@
     position:relative;
     top:-4px;
   }
-  .red{background: red}
+  .red{background: #ff3f36}
   .yellow{background: yellow}
-  .green{background: green}
+  .green{background: #1c981c}
 
 .c_red{
   color:red
@@ -80,7 +80,7 @@
   }
 
   .row1_right em{
-    margin: 0 5px;
+    margin: 0 3px;
   }
 
 
@@ -117,7 +117,7 @@
   }
   .alarm_blue{
 
-    background:green;
+    background:#1c981c;
      border-radius: 50%;
   }
   .alarm_title{

@@ -25,8 +25,9 @@
     <div class="model" id="model" ref="model">
               <div class="model_content">
                   <p><span>添加系统</span><i  @click="close_fn"></i></p>
+                  <input placeholder="输入关键字进行过滤" v-model="filterText" class="input1"></input>
                   <div class="content">
-                      <input placeholder="输入关键字进行过滤" v-model="filterText" class="input1"></input>
+                      <!-- <input placeholder="输入关键字进行过滤" v-model="filterText" class="input1"></input> -->
                           <el-tree
                           class="filter-tree"
                           ref="tree"
@@ -41,7 +42,7 @@
                           >
                         </el-tree>
                    </div>
-                   <p>
+                   <p class="model_bottom">
                      <span @click="addtree_fn()" class="btn">确定</span>
                      <span @click="close_fn" class="btn">取消</span>
                     </p>
@@ -56,7 +57,7 @@
                     <p v-for="item in Deldata" class="delitem"><el-checkbox :label="item.systemId" :key="item.systemId">{{item.sysName}}</el-checkbox></p>
                 </el-checkbox-group>
             </div>
-             <p>
+             <p class="model_bottom">
                <span @click="SaveDel_fn()" class="btn">确定</span>
                <span @click="CloseDel_fn" class="btn">取消</span>
               </p>
@@ -405,12 +406,12 @@
 
   
           .input1{
-            background: #101526;
+            background: #0b0715;
             height: 30px;
             width: 97%;
             padding: 0 10px;
-            border: #1b2032;
-            color: #fff;
+            border: #0c2a4c;
+            color: #ffffff;
             margin: 10px 0;
           }
 /*编辑模态框阴影*/
@@ -425,7 +426,7 @@
             background-color: rgba(0,0,0,0.7);
           }
           .model_content{
-          width: 700px;
+          width: 680px;
           margin: 10% auto;
           padding: 10px;
           background:#1b2032;
@@ -437,7 +438,11 @@
               height: 40px;
               line-height: 40px;
           }
-
+          .model_bottom{
+            text-align: right;
+            margin: 10px 20px;
+          }
+          
           .model_content>p>i{
               cursor: pointer;
               width:20px;
@@ -449,10 +454,11 @@
           }
           .content{
               height: 300px;
+              background: #101526;
               overflow: auto;
           }
           .delitem{
-            background: #101526;
+           
             padding:10px;
           }
           @-webkit-keyframes zoom{

@@ -358,7 +358,8 @@
     flex-direction:row;
   }
   .left{
-    width: 200px;
+    width: 250px;
+    padding: 10px 5px;
     background:$bg-color;
     overflow: hidden;
   }
@@ -376,7 +377,12 @@
           background:#1d2437;
           margin-left:20px;
           cursor: pointer;
+          color: #9eaacb;
+          &:hover{
+            color:#ffffff;
+          }
         }
+
       }
    
   }
