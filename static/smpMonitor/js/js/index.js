@@ -59,61 +59,74 @@ var TableInit = function() {
 				field : 'id',
 				title : '监控id',
 				width : '9%',
-				visible : false
+				align:'center',
+				visible : false,
+				formatter : format
 			}, {
 				field : 'name',
 				title : '监控名称',
 				width : '10%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'type',
 				title : '监控类型',
 				width : '7%',
+				align:'center',
 				formatter : typeHandle
 			}, {
 				field : 'sys_name',
 				title : '应用系统名称',
 				width : '9%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'ip',
 				title : '被监控对象ip/域名',
 				width : '10%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'url',
 				title : '监控地址',
 				width : '19%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'rate',
 				title : '监控频率',
 				width : '5%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'repeatflag',
 				title : '重复确认',
 				width : '5%',
+				align:'center',
 				formatter : flagHandle
 			}, {
 				field : 'state',
 				title : '运行状态',
 				width : '5%',
+				align:'center',
 				formatter : stateHandle
 			}, {
 				field : 'linkperson',
 				title : '责任人',
 				width : '5%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'remark',
 				title : '备注',
 				width : '19%',
+				align:'center',
 				formatter : format
 			}, {
 				field : 'state',
 				title : '操作',
 				width : '4%',
+				align:'center',
 				formatter : operationHandle
 			} ]
 		});
