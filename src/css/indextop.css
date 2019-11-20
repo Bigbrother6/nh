@@ -110,11 +110,15 @@
     top: 4px;
     margin-left: 10px;
   }
-    .alarm_red{
-    background: url("../image/red.png")
+  .alarm_red{
+
+    background: #f0544d;
+     border-radius: 50%;
   }
   .alarm_blue{
-    background:url("../image/blue.png")
+
+    background:green;
+     border-radius: 50%;
   }
   .alarm_title{
     font-size:17px;
