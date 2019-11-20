@@ -267,6 +267,7 @@
     width: 100px;
     height: 100px;
     margin:5px;
+    border-radius: 5px;
     background:green;
   }
   .sysname{
@@ -276,7 +277,7 @@
     text-align: center
   }
   .system .gao{
-    background: red;
+    background:#ef3a32;
   }
 
 

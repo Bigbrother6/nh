@@ -11,7 +11,7 @@
         </div>
         <div class="state">
             <p class="title"><i></i><span>运行状态</span></p>
-            <p class="alarmnum">当前告警数量{{Total}}条，其中异常{{Total}}，正常0</p>
+            <p class="alarmnum">当前告警数量{{Total}}条，其中异常{{Total}}条，正常0条</p>
             <div v-for="item in TimeAlarm">
               <span>0</span>
               <i class="huang"></i>
@@ -98,7 +98,7 @@
         AlarmList:"",
         TopSys:"",
         Monitor:"",
-        Total:"",//总计
+        Total:0,//总计
         
         red1:"red1",
         blue1:"blue1",
@@ -173,10 +173,6 @@
         let param={sysid:id}
 					this.$http.get("/duty/queryAlertNumDiffTime",param).then(res=>{
             this.TimeAlarm=res.data;
-            // let num=new Number();
-            // this.TimeAlarm.forEach(item => {num+=item.count});
-            // console.log(num)
-            // this.Total=num;  //和
 					}).catch((e)=>{
               console.log(e)
 					})
@@ -187,7 +183,7 @@
               this.Total=res.data.currentAlarm;
 					}).catch((e)=>{
               console.log(e);
-              this.Total=res.data.currentAlarm;
+              this.Total=0;
 					})
       },
       jump(){
@@ -204,6 +200,7 @@
         
       },
       jumpAlarm(){
+        sessionStorage["active"]=4;
         this.$router.push({
           path:"/config_monitoring",
           query:{}
@@ -255,13 +252,19 @@
     display: inline-block;
     width: 200px;
     height: 10px;
-    background: green;
+    background: -webkit-linear-gradient(left, #75e559, #07791D); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(right, #75e559, #07791D); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(right,#75e559, #07791D); /* Firefox 3.6 - 15 */
+    background: linear-gradient(to right, #75e559  , #07791D); /* 标准的语法（必须放在最后） */
   }
   .hong{
     display: inline-block;
     width: 200px;
     height: 10px;
-    background: red;
+    background: -webkit-linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
+    background: -moz-linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
+    background: linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
   }
 
   .alarm{
@@ -274,6 +277,9 @@
     float: right;
     margin-right: 7px;
     cursor: pointer;
+  }
+  .more:hover{
+    color:#ffffff
   }
   .tablelist{
     width: 100%;
@@ -346,6 +352,9 @@
   }
   .add{
     float:right;
+  }
+  .add:hover{
+    color:#ffffff;
   }
   .row2>div i{
     display: inline-block;

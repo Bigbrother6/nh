@@ -254,7 +254,8 @@
       }
       .datacenter>p{
         background:#262d43;
-        padding: 6px 10px;
+        padding: 6px 15px;
+        font-size: 18px;
       }
       .data_item{
         display: flex;

@@ -161,8 +161,11 @@
         font-size: 14px;
         cursor: pointer;
         margin: 0 100px 0 17px;
-       } 
+      }
     }
+    .search :hover{
+        color:#ffffff;
+      }
     .row2{
       margin-top:10px;
       padding: 20px;
