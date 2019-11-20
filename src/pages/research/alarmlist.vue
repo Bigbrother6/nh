@@ -18,23 +18,23 @@
             <table id="tables">
                 <tr>
                     <th width="10%">标题</th>
-                    <th>内容</th>
+                    <th width="50%">内容</th>
                     <th width="10%">级别</th>
-                    <th width="10%">次数</th>
+                    <th width="5%">次数</th>
                     <th width="15%">最后发生时间</th>
                     <th width="10%">业务系统</th>
                 </tr>
                 <tr v-for="item in ShowData">
-                    <td>{{item.title}}</td>
-                    <td @click="open()"><span class="tab_content">{{item.text}}</span></td>
-                    <td>
+                    <td width="10%">{{item.title}}</td>
+                    <td width="50%" @click="open()"><span>{{item.text}}</span></td>
+                    <td width="10%">
                       <span v-if="item.severity==1">严重告警</span>
                       <span v-if="item.severity==2">主要告警</span>
                       <span v-if="item.severity==3">次要告警</span>
                     </td>
-                    <td>{{item.total}}</td>
-                    <td>{{item.lastoccurtime}}</td>
-                    <td>{{item.sysName}}</td>
+                    <td width="5%">{{item.total}}</td>
+                    <td width="15%">{{item.lastoccurtime}}</td>
+                    <td width="10%">{{item.sysName}}</td>
                 </tr>
             </table>
             <div class="page" v-if="pageShow">
@@ -72,7 +72,9 @@
           count:0,    //总条数
           pageNum:1, //当前页
           list:[],
-          dialogVisible: false
+          dialogVisible: false,
+
+          ww:"",
         };
       },
   
@@ -80,12 +82,22 @@
           page
       },
   
-      computed: {},
+      computed: {
+        
+      },
   
       created(){
         this.id = sessionStorage["DepId"];
         this.AlarmList_fn(this.id);
-
+      },
+      mounted() {
+        let ww =$("#tables").width();
+        this.ww=ww;
+        console.log(ww); //1286
+      
+      },
+      updated() {
+     
       },
       methods: {
         page_fn(val){
@@ -142,6 +154,7 @@
   </script>
   <style lang='scss' scoped>
       #alarmlist{
+        width:100% ;
         color:#ffffff;
         padding:20px;
       }
@@ -167,11 +180,12 @@
         color:#ffffff;
       }
     .row2{
+
       margin-top:10px;
       padding: 20px;
-      /* width: 1870px; */
+      width: 100%;
       background:#101526;
-
+      font-size: 13px;
       table{
         width: 100%;
         margin-top:20px;
@@ -183,10 +197,9 @@
           /* padding:15px 5px 5px 10px; */
         }
         td{
-          height: 45px;
-          line-height: 45px;
+          padding: 8px;
           text-align: center;
-          /* padding:15px 5px 5px 10px; */
+  
         }
        tr:nth-child(odd) > td {
             background:#1d2437;
@@ -196,9 +209,17 @@
           margin-top:20px;
       }
       .tab_content{
-        cursor: pointer;
-        white-space:nowrap;         
+        cursor: pointer;  
+        overflow:hidden;
         text-overflow:ellipsis; 
+        white-space:nowrap;
+        display:inline-block;
+        width: 500px;      
+      }
+      .tab_width{
+        overflow:hidden;
+        text-overflow:ellipsis; 
+        white-space:nowrap; 
       }
     }
     .model_content{

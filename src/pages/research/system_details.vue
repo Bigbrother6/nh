@@ -349,6 +349,7 @@
     height: 125px;
     text-align: center;
     margin: 20px 35px;
+    cursor: pointer;
   }
   .add{
     float:right;

@@ -147,7 +147,7 @@
             },
             label:{
               fontSize: 15,
-              formatter:"{b}:{d}%"
+              formatter:"{b}:\n{d}%"
 			      },
             series:{
               name:'面积模式',
