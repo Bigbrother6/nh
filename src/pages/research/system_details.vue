@@ -15,7 +15,7 @@
             <div v-for="item in TimeAlarm">
               <span>0</span>
               <i class="huang"></i>
-              <span>{{item.flag}}分钟</span>
+              <span :class="{time:item.flag==5}">{{item.flag}}分钟</span>
               <i class="hong"></i>
               <span>{{item.count}}</span>
             </div>
@@ -262,11 +262,14 @@
     width: 200px;
     height: 10px;
     background: -webkit-linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
-    background: -o-linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
-    background: -moz-linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
-    background: linear-gradient(left, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(right, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
+    background: -moz-linear-gradient(right, #ee3a23, #ff9486); /* Safari 5.1 - 6.0 */
+    background: linear-gradient(to right, #ee3a23, #ff9486);  /* 标准的语法（必须放在最后） */
   }
-
+  .time{
+    display:inline-block;
+    width: 50px;
+  }
   .alarm{
     /* width: 750px; */
    width: 39%;

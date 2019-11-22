@@ -58,6 +58,9 @@ a{
 .btn:hover{
     color:#ffffff;
 }
+.pointer{
+    cursor: pointer;
+}
 .MessError{
     min-width: 210px;
 }

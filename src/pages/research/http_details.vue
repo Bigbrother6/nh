@@ -77,7 +77,7 @@
                     <td colspan="5">{{item.remark}}</td> 
                 </tr>                              
             </table>
-            <h4 class="buttons"><span v-if="operate.alarm==1">告警确认</span><span v-if="operate.order==1">分派工单</span></h4>
+            <h4 class="buttons"><span v-if="operate.alarm==0" @click="confirm_fn(item.sysId,item.EVENTID)">告警确认</span><span v-if="operate.order==0">分派工单</span></h4>
         </div>
         <!--分派 -->
             <div class="model" id="model" ref="model">
@@ -150,6 +150,7 @@
             this.getData(ip,id);
         },
         methods:{
+            //获取页面数据
             getData(ip,id){
                 let param = {ip:ip,sysId:id};
                 this.$http.axiospost("/duty/queryTaskListByIp",param).then((res)=>{
@@ -165,6 +166,17 @@
                         console.log("无数据")
                     }
                 })
+            },
+            //确认告警
+            confirm_fn(id,eventid){
+              let  param={id:id,eventId:eventid}
+              this.$http.axiospost("/duty/ackAlert",param).then((res)=>{
+                  if(res.data){
+                      this.$message({massage:"确认告警成功",type:"success"});
+                  }else{
+                    this.$message.error({massage:"确认告警成失败"});
+                  }
+              }) 
             },
             addtree_fn(){
 
@@ -248,8 +260,13 @@
                 background: #272e48;
                 margin: 10px 20px;
                 border-radius:5px;
-                cursor: pointer;    
+                cursor: pointer;
+                color:#9eaacb;
             }
+
+        }
+        .buttons span:hover{
+            color:#ffffff;
         }
         /*编辑模态框阴影*/
         .model{

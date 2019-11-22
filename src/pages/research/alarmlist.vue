@@ -26,7 +26,9 @@
                 </tr>
                 <tr v-for="item in ShowData">
                     <td width="10%">{{item.title}}</td>
-                    <td width="50%" @click="open()"><span>{{item.text}}</span></td>
+                    <td width="50%" @click="open()" class="pointer">
+                            <span>{{item.text}}</span>
+                    </td>
                     <td width="10%">
                       <span v-if="item.severity==1">严重告警</span>
                       <span v-if="item.severity==2">主要告警</span>

@@ -12,8 +12,11 @@
         class="d1 clearfix" 
         :style="{width:item.width+'px',height:item.height+'px'}">
         <p class="title"><i></i><span>{{item.name}}</span>
-          <em  @click="deltree(item)"></em>
+          <!-- 删除 -->
+          <em  @click="deltree(item.id)"></em>
+          <!-- 添加 -->
           <b @click="open_fn(item.id)"></b>
+         <!-- 保存 -->
           <b @click="Save_fn(item,$event)" class="save"></b>
         </p>
         <div class="temp1" v-for="items in item.data">
@@ -24,10 +27,9 @@
     <!-- 模套框1-->
     <div class="model" id="model" ref="model">
               <div class="model_content">
-                  <p><span>添加系统</span><i  @click="close_fn"></i></p>
+                  <p><span>添加系统</span><i  @click="CloseAdd_fn"></i></p>
                   <input placeholder="输入关键字进行过滤" v-model="filterText" class="input1"></input>
                   <div class="content">
-                      <!-- <input placeholder="输入关键字进行过滤" v-model="filterText" class="input1"></input> -->
                           <el-tree
                           class="filter-tree"
                           ref="tree"
@@ -38,18 +40,18 @@
                           :props="defaultProps"
                           :check-on-click-node="true"
                           :filter-node-method="filterNode"
-                          @check-change="ff"
+                          @check-change="AddChange"
                           >
                         </el-tree>
                    </div>
                    <p class="model_bottom">
-                     <span @click="addtree_fn()" class="btn">确定</span>
-                     <span @click="close_fn" class="btn">取消</span>
+                     <span @click="SaveAdd_fn()" class="btn">确定</span>
+                     <span @click="CloseAdd_fn" class="btn">取消</span>
                     </p>
               </div>
     </div>
 
-    <div class="model" id="model2" ref="model2">
+    <!-- <div class="model" id="model2" ref="model2">
         <div class="model_content">
             <p><span>删除系统</span><i  @click="CloseDel_fn"></i></p>
             <div class="content">
@@ -61,7 +63,33 @@
                <span @click="SaveDel_fn()" class="btn">确定</span>
                <span @click="CloseDel_fn" class="btn">取消</span>
               </p>
-        </div>
+        </div> -->
+     <!-- 模套框1-->
+      <div class="model" id="mode2" ref="model2">
+          <div class="model_content">
+                <p><span>删除系统</span><i  @click="CloseDel_fn"></i></p>
+                <input placeholder="输入关键字进行过滤" v-model="filterText2" class="input1"></input>
+                <div class="content">
+                        <el-tree
+                        class="filter-tree"
+                        ref="tree2"
+                        :data="Deldata"
+                        :show-checkbox="true"
+                        node-key="id"
+                        :default-expanded-keys="['root01']"
+                        :props="defaultProps2"
+                        :check-on-click-node="true"
+                        :filter-node-method="filterNode2"
+                        @check-change="DelChange"
+                        >
+                      </el-tree>
+                </div>
+                <p class="model_bottom">
+                  <span @click="SaveDel_fn()" class="btn">确定</span>
+                  <span @click="CloseDel_fn" class="btn">取消</span>
+                  </p>
+          </div>
+        </div>       
     </div>    
   </div>
 </template>
@@ -73,9 +101,12 @@
       name:'',
       data () {
         return {
-          date:"",
+          date:"",   //日期
+          user:"",   //
           queryid:"",
           dutylist:[],
+          
+          //添加
           data: [],
           defaultProps: {
             children: 'children',
@@ -84,16 +115,23 @@
           filterText:"",
           itemid:"",
           checkbox:[],
-          //删除
-            Deldata:"",
-            Deldata_Id:[],
-            Deldata_Fid:"",
-          user:"", 
+    
+    
+          //新删除
+          defaultProps2: {children: 'children',label: 'label'},
+          Deldata:[],//展示数据
+          chenkbox2:[],//选中要删除的
+          Deldata_Fid:"",//要删除的子模板id
+          filterText2:"",
+
         };
       },
       watch:{
         filterText(val) {
           this.$refs.tree.filter(val);        
+        },
+        filterText2(val) {
+          this.$refs.tree2.filter(val);        
         },
         '$route' (to, from){
           this.$router.go(0);
@@ -131,17 +169,19 @@
           down(){
               $( ".d1").resizable();
           },
+          //打开添加框
           open_fn(id){
               this.itemid=id;
+              this.filterText="";
               this.getTree_fn(this.itemid)
               this.$refs.model.style="display:block";    
           },
-          close_fn(){
-            console.log(this.filterText);
+          CloseAdd_fn(){
               this.$refs.model.style="display:none";
           },
-          ff(data){
+          AddChange(data){
             this.checkbox =this.$refs.tree.getCheckedKeys();
+            console.log(this.checkbox)
           },
 
         // 获取模板
@@ -159,14 +199,14 @@
           })
         },
         //添加
-        addtree_fn(){
+        SaveAdd_fn(){
           let param = {itemId:this.itemid,sysIds:this.checkbox};
           console.log(param)
           this.$http.axiospost("/duty/addSysToTemplateItem",param).then((res)=>{
               if(res.data){
                 this.$message({message: '恭喜你，添加成功',type: 'success'});
                 this.getTemp_fn(this.queryid);
-                this.close_fn();
+                this.CloseAdd_fn();
               }else{
                 this.$message.error('错了哦，添加失败');
               }
@@ -193,22 +233,31 @@
           if (!value) return true;
           return data.label.indexOf(value) !== -1;
         },
+
         //打开删除框
-        deltree(item){
+        deltree(id){
+          this.filterText2="";
           this.$refs.model2.style="display:block";
-          console.log(item)
-          this.Deldata=item.data; //已经有的数据
-          console.log(this.Deldata);
-          this.Deldata_Fid=item.id; //
-          this.Deldata_Id=[];
+          console.log(id);
+          this.Deldata_Fid=id; 
+          let param={moduleId:id};
+          this.$http.get("/duty/getSystemTreeDelete",param).then((res)=>{
+              this.Deldata=res.data;
+          })
         },
+        filterNode2(value, data) {
+          if (!value) return true;
+          return data.label.indexOf(value) !== -1;
+        },
+
         //选择删除
         DelChange(){
-          console.log(this.Deldata_Id)//要删出的id
+          this.chenkbox2 = this.$refs.tree2.getCheckedKeys();
+          console.log(this.chenkbox2);
         },
         //确认删除
         SaveDel_fn(){
-          let param = {itemId:this.Deldata_Fid,sysIds:this.Deldata_Id};
+          let param = {itemId:this.Deldata_Fid,sysIds:this.chenkbox2};
           console.log(param)
           this.$http.axiospost("/duty/removeSystemFromMoudle",param).then((res)=>{
               if(res.data){
@@ -220,6 +269,7 @@
               }
           })            
         },
+
         //取消删除
         CloseDel_fn(){
           this.$refs.model2.style="display:none";
