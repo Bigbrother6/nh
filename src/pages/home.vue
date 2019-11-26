@@ -143,7 +143,8 @@ import store from '../store/index.js';
               sessionStorage["operate"]=JSON.stringify(item.operate);
               this.$router.push({path:'/research',query:{name:name}}) 
             }else if(item.label=="值班"){
-             
+              this.active=3
+              sessionStorage['active']=3;
               sessionStorage["operate"]=JSON.stringify(item.operate);
               sessionStorage["TempId"]=id;
               const { href } = this.$router.resolve({
@@ -165,10 +166,10 @@ import store from '../store/index.js';
               console.log("菜单错误")
             }
         },
-        // 获取模板
+      
         getNav_fn(){
           let param={};
-          this.$http.get("/home/getNavData").then((res)=>{  
+          this.$http.get("/home/getNavData",param).then((res)=>{  
               this.Menu=res.data;
               this.Menu.sort((a, b) => {
                   return (a.order + '') > (b.order + '')? 1 : -1;
@@ -233,22 +234,20 @@ import store from '../store/index.js';
   }
   .menu a{
     display: inline-block;
-    /* padding: 0 60px;
-    margin: 2px 20px; */
     text-decoration: none;
     cursor: pointer;
     width: 120px;
     text-align: center;
+   
   }
  .actives{
-  color:#14a9ff;
+    color:#14a9ff;
     background: #3D4866;
     border-bottom:2px solid #1f74f1;
  }
   .menu a:hover{
     color:#14a9ff;
     background: #3D4866;
-    border-bottom:2px solid #1f74f1;
   }
 
 .Sub_menu{
@@ -256,14 +255,16 @@ import store from '../store/index.js';
   position: absolute;
   background:#3D4866;
   z-index: 5;
-  /* display: flex;
-  flex-direction: column; */
+  max-width: 500px;
 }
+
+
 .menu_children{
   width: 122px;
   height: 70px;
   text-align: center;
   cursor:pointer;
+  float: left;
 }
 .menu_children:hover{
   color:#14a9ff;

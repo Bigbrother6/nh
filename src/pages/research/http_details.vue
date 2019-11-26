@@ -77,7 +77,7 @@
                     <td colspan="5">{{item.remark}}</td> 
                 </tr>                              
             </table>
-            <h4 class="buttons"><span v-if="operate.alarm==0" @click="confirm_fn(item.sysId,item.EVENTID)">告警确认</span><span v-if="operate.order==0">分派工单</span></h4>
+            <h4 class="buttons"><span v-if="operate.alarm==1" @click="confirm_fn(item.sysId,item.EVENTID)">告警确认</span><span v-if="operate.order==1">分派工单</span></h4>
         </div>
         <!--分派 -->
             <div class="model" id="model" ref="model">
@@ -219,6 +219,7 @@
         .title span{
           position: relative;
           top: 4px;
+          left: 15px;
         }
         table{
             width: 100%;

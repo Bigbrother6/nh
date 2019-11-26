@@ -19,6 +19,7 @@ body {
 
 .panel>.panel-body {
 	background: #101526;
+	padding:10px;
 }
 
 .panel-default {
@@ -34,6 +35,7 @@ body {
 	background: #1d2437;
 	color: #fff;
 	border-color: #555;
+	cursor: pointer;
 }
 
 .form-group input:focus,

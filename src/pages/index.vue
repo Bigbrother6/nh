@@ -59,9 +59,20 @@
           <div class="datacenter" v-for="item in datas" :key="item.deptId">
               <p>{{item.dept}}</p>
               <div class="data_item">
-                <div><i class="icon1"></i>监控系统数<em @click="jump(item.deptId,item.dept)" class="cursor">{{item.sysNum}}</em></div>
-                <div><i class="icon2"></i>当前发生告警系统数<em>{{item.alarmSysNum}}</em></div>
-                <div><i class="icon3"></i>当前总告警<em>{{item.sysAlarmNum}}</em>
+                <div class="item1">
+                  <i class="icon1" @click="jump(item.deptId,item.dept)"></i>
+                  <span @click="jump(item.deptId,item.dept)">监控系统数</span>
+                  <em @click="jump(item.deptId,item.dept)">{{item.sysNum}}</em>
+                </div>
+                <div>
+                  <i class="icon2"></i>
+                  <span>当前发生告警系统数</span>
+                  <em>{{item.alarmSysNum}}</em>
+                </div>
+                <div>
+                  <i class="icon3"></i>
+                  <span>当前总告警</span>
+                  <em>{{item.sysAlarmNum}}</em>
               </div>
               <div>
                   <span class="add" @click="details_fn(item.deptId)"><i class="icon4"></i>查看详情</span>
@@ -114,6 +125,7 @@
             datas:[], //数据中心列表
             details:[], //数据中心详情
             nodata:false,
+    
         };
       },
   
@@ -210,7 +222,8 @@
         },
         //数据详情
         details_fn(id){
-          this.$refs.model.style="display:block";
+         // this.$refs.model.style="display:block";
+          this.$refs.model.style.display="block";
             let param={deptId:id}
             this.$http.axiospost("/home/getSysAlarmMsgByDeptId",param).then(res=>{
                   this.details=res.data;
@@ -229,7 +242,7 @@
         },
         
         close_model(){
-            this.$refs.model.style="display:none";
+          this.$refs.model.style.display="none";
         }
       },
   
@@ -277,9 +290,10 @@
         margin: 0 10px;
        
       }
-      .cursor{
+      .item1>i,.item1>span,.item1>em{
         cursor: pointer;
       }
+
       .alarmnum{
         color: #48c1ff;
         margin:0 4px;
@@ -386,12 +400,32 @@
     }
 
     @-webkit-keyframes zoom{
-      from {-webkit-transform: scale(0)}
-      to {-webkit-transform: scale(1)}
+      from {
+        -webkit-transform: scale(0);
+        -moz-transform: scale(0);     /* for Firefox */
+        -ms-transform:scale(0);        /* for IE */
+        -o-transform: scale(0);         /* for Opera */
+      }
+      to {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);     /* for Firefox */
+        -ms-transform:scale(1);        /* for IE */
+        -o-transform: scale(1);         /* for Opera */
+      }
     }
     @keyframes zoom{
-      from {transform: scale(0)}
-      to {transform: scale(1)}
+      from {
+        -webkit-transform: scale(0);
+        -moz-transform: scale(0);     /* for Firefox */
+        -ms-transform:scale(0);        /* for IE */
+        -o-transform: scale(0);         /* for Opera */
+      }
+      to {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);     /* for Firefox */
+        -ms-transform:scale(1);        /* for IE */
+        -o-transform: scale(1);         /* for Opera */
+      }
     }
 
 

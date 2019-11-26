@@ -47,8 +47,8 @@ axios.interceptors.response.use(
     },
     function(error) {
         // 对响应错误做点什么
-        //获取状态码
-        console.log(error.response.status)
+        //获取状态码404没有响应
+        console.log("对响应错误做点什么"+error.response)
 	    return Promise.reject(error);
 });
 

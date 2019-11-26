@@ -7,13 +7,13 @@
           <p><span @click="addTemp_fn()">添加</span><span @click="getTemp_fn()">刷新</span></p>
           <table>
             <tr>
-              <th width="30%">模版标识</th>
-              <th width="30%">模版名称</th>
-              <th width="30%">模版描述</th>
+           
+              <th width="40%">模版名称</th>
+              <th width="40%">模版描述</th>
               <th width="20%">操作</th>
             </tr>
-            <tr v-for="(item,index) in data[0].children">
-              <td>{{item.id}}</td>
+            <tr v-for="(item,index) in tempdata">
+          
               <td>{{item.name}}</td>
               <td>{{item.desc}}</td>
               <td>
@@ -21,20 +21,23 @@
                 <span @click="delTemp_fn(item.id)" class="delete">删除</span>
               </td>
             </tr>
+            <tr v-if="tempdata.length==0">
+              <td colspan="4">没有数据</td>
+            </tr>
           </table>
       </div>
       <div class="right" v-else>
           <p><span @click="addTempChild_fn()">添加</span><span @click="getTempChild_fn(TempId)">刷新</span></p>
           <table>
             <tr>
-              <th width="25%">模块标识</th>
-              <th>模块名称</th>
-              <th>模块宽度</th>
-              <th>模块高度</th>
-              <th>操作</th>
+   
+              <th width="30%">模块名称</th>
+              <th width="20%">模块宽度</th>
+              <th width="20%">模块高度</th>
+              <th width="30%">操作</th>
             </tr>
             <tr v-for="item in templist">
-              <td>{{item.id}}</td>
+      
               <td>{{item.name}}</td>
               <td>{{item.width}}</td>
               <td>{{item.height}}</td>
@@ -73,8 +76,8 @@
     <div class="tempmodal">
       <div><span>模板名称</span><input type="text" v-model="ChildName"></div>
       <div>
-        <span class="desc2">宽度</span><input type="text" v-model="ChildW" style="width:100px" oninput = "value=value.replace(/[^\d]/g,'')">px
-        <span class="desc2">高度</span><input type="text" v-model="ChildH" style="width:100px" oninput = "value=value.replace(/[^\d]/g,'')">px
+        <span class="desc2">宽度</span><input type="text" v-model="ChildW" style="width:85px" oninput = "value=value.replace(/[^\d]/g,'')">px
+        <span class="desc2">高度</span><input type="text" v-model="ChildH" style="width:85px" oninput = "value=value.replace(/[^\d]/g,'')">px
       </div>
       <div class="tcenter">
         <span class="btn"  @click="confirmAddChild_fn()">提交</span>
@@ -95,6 +98,7 @@
         show:true,
         data: [{name: '模板分类',id:0,children:[]}],
         defaultProps: {children: 'children',label: 'name'},
+        tempdata:[],
         dialogTableVisible:false,
         tempName:"",
         tempDesc:"",
@@ -173,7 +177,7 @@
         this.ChildH=null;
         this.ChildW=null;
       },
-      // 确认添加模板
+      // 确认添加模板分类
       confirmAdd_fn(){
         if(this.tempState==0){ //添加
           let param = {};
@@ -225,6 +229,19 @@
             templateId:this.tree.id,
             name:this.ChildName
           };
+          if(this.ChildName=="" || this.ChildName==null){
+            this.$message.error('请填写模板名称');
+              return false
+          }
+          if(this.ChildH=="" || this.ChildH==null){
+            this.$message.error('请填写模板高度');
+              return false
+          }
+          if(this.ChildW=="" || this.ChildW==null){
+            this.$message.error('请填写模板宽度');
+              return false
+          }
+
           console.log(param)
           this.$http.axiospost("/configure/addTemplateModuleModel",param).then((res)=>{
               if(res.data){
@@ -412,6 +429,8 @@
       box-sizing: border-box;
       color: #fff;
       padding-left: 5px;
+      margin-right: 3px;
+      outline:none;
     }
     textarea{
       background: #0b1126;
@@ -421,7 +440,14 @@
       color: #fff;
       padding-left: 5px;
       font-size: 14px;
+      outline:none;
+      resize:none;
+      overflow: auto;
     }
+    input:focus
+      { 
+        
+      }
   }
   table{
       color: #ffffff;
@@ -435,8 +461,7 @@
         background:#262d43;
       }
       td{
-        height: 50px;
-        line-height: 50px;
+       padding:15px 0px;
         text-align: center;
       }
       tr:nth-child(odd) > td {

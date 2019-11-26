@@ -1,7 +1,7 @@
 <template>
     <div id="alarmlist">
         <div class="row1">
-            <span class="title">标题</span><el-input v-model="title" placeholder="请输入名称"></el-input>
+            <span class="title">标题</span><el-input v-model="title" placeholder="请输入名称" @keyup.enter.native="Search_fn()"></el-input>
             <!-- <span class="title">业务系统</span><el-input v-model="sysName" placeholder="请输业务系统"></el-input> -->
             <!-- <span class="title">告警类型</span> -->
             <!-- <el-select v-model="Svalue" placeholder="请选择">
@@ -17,7 +17,7 @@
         <div class="row2">
             <table id="tables">
                 <tr>
-                    <th width="10%">标题</th>
+                    <th width="10%">监控项名称</th>
                     <th width="50%">内容</th>
                     <th width="10%">级别</th>
                     <th width="5%">次数</th>
@@ -25,8 +25,8 @@
                     <th width="10%">业务系统</th>
                 </tr>
                 <tr v-for="item in ShowData">
-                    <td width="10%">{{item.title}}</td>
-                    <td width="50%" @click="open()" class="pointer">
+                    <td width="10%">{{item.NAME}}</td>
+                    <td width="50%" class="pointer">
                             <span>{{item.text}}</span>
                     </td>
                     <td width="10%">
@@ -37,6 +37,9 @@
                     <td width="5%">{{item.total}}</td>
                     <td width="15%">{{item.lastoccurtime}}</td>
                     <td width="10%">{{item.sysName}}</td>
+                </tr>
+                <tr v-if="ShowData.length==0" class="nodata">
+                  <td colspan=6>没有数据</td>
                 </tr>
             </table>
             <div class="page" v-if="pageShow">
@@ -199,13 +202,18 @@
           /* padding:15px 5px 5px 10px; */
         }
         td{
-          padding: 8px;
+          padding: 15px 0px;
           text-align: center;
   
         }
        tr:nth-child(odd) > td {
             background:#1d2437;
           } 
+      }
+      .nodata{
+        background: #1d2437;
+        height: 50px;
+        line-height: 50px;
       }
       .page{
           margin-top:20px;

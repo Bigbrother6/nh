@@ -89,9 +89,14 @@
       <div id="researchindex">
         <p class="title"><i></i><span>{{name}}</span></p>
         <div class="system">
-          <div :class="{gao:item.sysAlarmNum>0}" v-for="item in sys" @click="jump(item.id)">
-            <h4 class="sysname">{{item.sysName}}</h4>
-            <h5 class="sysnum">{{item.sysAlarmNum}}</h5>
+          <div :class="{gao:item.sysAlarmNum>0}" v-for="item in sys" @click="jump(item.id)" class="tip">
+                  <h4 class="sysname">{{item.abbreviation}}</h4>
+                  <h4 class="sysname" v-if="item.abbreviation=='' || item.abbreviation==undefined">{{item.sysName}}</h4>
+                  <h5 class="sysnum">{{item.sysAlarmNum}}</h5>
+                  <div class="tipbox">
+                    <div class="tipbox2"></div>
+                    <span>{{item.sysName}}</span>
+                  </div>
           </div>
         </div>
       </div>
@@ -201,12 +206,13 @@
           this.$http.get("/department/getTaskBySysId",param).then((res)=>{
               if(res.data.taskNum>0){
                 sessionStorage["DepId"]=id;
+                sessionStorage["active"]=2;
                 sessionStorage['showlist']=1;
                 this.$router.push({
                   path:"/system_details",
                 })
               }else{
-                this.$message.error('还未添加系统');
+                this.$message.error('该系统没有加入到监控,请到监控管理进行配置');
               }
           })
         },
@@ -264,21 +270,52 @@
       margin:10px;
   }
   .system>div{
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     margin:5px;
     border-radius: 5px;
     background:green;
+    cursor: pointer;
   }
   .sysname{
-    text-align: center
+    text-align: center;
+    margin-top:35px;
+    font-weight: 600;
   }
   .sysnum{
-    text-align: center
+    text-align: center;
+    font-weight: 600;
   }
   .system .gao{
     background:#ef3a32;
   }
-
-
+ .tip{
+   position: relative
+ }
+ .tip:hover .tipbox{
+    display: block;
+ }
+ .tipbox{
+    position: absolute;
+    display:none;
+    top: 100px;
+    right:10px;
+    padding: 5px;
+    min-width: 100px;
+    border-radius: 5px;
+    text-align: left;
+    vertical-align: top;
+    background-color:#352425;
+ }
+ .tipbox2{
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #352425;
+    box-sizing: border-box;
+    position: absolute;
+    top: -9px;
+    left: 26px;
+ }
 </style>

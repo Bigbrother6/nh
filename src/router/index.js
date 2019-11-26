@@ -12,6 +12,9 @@ import config_temp from '@/pages/config/config_temp'
 import http_details from '@/pages/research/http_details'
 import system_details from '@/pages/research/system_details'
 import alarmlist from "@/pages/research/alarmlist"
+
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -69,6 +72,11 @@ export default new Router({
       path: '/dutyhome',
       name: 'dutyhome',
       component: dutyhome,
-    }
+    },
+    // {
+    //   path: '*',
+    //   name: 'error404',
+    //   component: error404,
+    // }
   ]
 })

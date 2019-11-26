@@ -60,7 +60,7 @@
     top:-4px;
   }
   .red{background: #ff3f36}
-  .yellow{background: yellow}
+  .yellow{background: #f5da00}
   .green{background: #1c981c}
 
 .c_red{
@@ -117,7 +117,7 @@
   }
   .alarm_blue{
 
-    background:#1c981c;
+    background:#f5da00;
      border-radius: 50%;
   }
   .alarm_title{

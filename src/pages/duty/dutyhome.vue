@@ -1,5 +1,6 @@
 <template>
   <div id="dutyhome">
+    <!-- 头部 -->
     <header>
         <div class="logo"></div>
         <div class="dutyname">值班监控</div>
@@ -20,8 +21,11 @@
           <b @click="Save_fn(item,$event)" class="save"></b>
         </p>
         <div class="temp1" v-for="items in item.data">
-            <i @click="jump(items)" class="zhiban1"></i>
+            <el-tooltip class="item" effect="dark" :content="items.sysName" placement="top-start">
+              <i @click="jump(items)" :class="items.sysAlarmNum>0 ? zhiban1 : zhiban2"></i>
+            </el-tooltip>
             <p>{{items.abbreviation}}</p>
+            <p v-if="items.abbreviation=='' || items.abbreviation==undefined">{{items.sysName}}</p> 
         </div>
     </div>
     <!-- 模套框1-->
@@ -36,7 +40,7 @@
                           :data="data"
                           :show-checkbox="true"
                           node-key="id"
-                          :default-expanded-keys="['root01']"
+                          :default-expanded-keys="['root000001']"
                           :props="defaultProps"
                           :check-on-click-node="true"
                           :filter-node-method="filterNode"
@@ -76,7 +80,7 @@
                         :data="Deldata"
                         :show-checkbox="true"
                         node-key="id"
-                        :default-expanded-keys="['root01']"
+                        :default-expanded-keys="['root000001']"
                         :props="defaultProps2"
                         :check-on-click-node="true"
                         :filter-node-method="filterNode2"
@@ -124,6 +128,8 @@
           Deldata_Fid:"",//要删除的子模板id
           filterText2:"",
 
+          zhiban1:"zhiban1",
+          zhiban2:"zhiban2",
         };
       },
       watch:{
@@ -174,10 +180,10 @@
               this.itemid=id;
               this.filterText="";
               this.getTree_fn(this.itemid)
-              this.$refs.model.style="display:block";    
+              this.$refs.model.style.display="block";    
           },
           CloseAdd_fn(){
-              this.$refs.model.style="display:none";
+              this.$refs.model.style.display="none";
           },
           AddChange(data){
             this.checkbox =this.$refs.tree.getCheckedKeys();
@@ -200,7 +206,13 @@
         },
         //添加
         SaveAdd_fn(){
-          let param = {itemId:this.itemid,sysIds:this.checkbox};
+         let arr = this.checkbox.filter(function(x){
+            if(x.length<10){
+              return true;
+            }
+          })
+          console.log(arr);
+          let param = {itemId:this.itemid,sysIds:arr};
           console.log(param)
           this.$http.axiospost("/duty/addSysToTemplateItem",param).then((res)=>{
               if(res.data){
@@ -223,7 +235,7 @@
                   path:"/system_details",
                 })
               }else{
-                this.$message.error('还未添加系统');
+                this.$message.error('该系统没有加入到监控，请到监控管理进行配置');
               }
           })
         },
@@ -237,7 +249,7 @@
         //打开删除框
         deltree(id){
           this.filterText2="";
-          this.$refs.model2.style="display:block";
+          this.$refs.model2.style.display="block";
           console.log(id);
           this.Deldata_Fid=id; 
           let param={moduleId:id};
@@ -257,7 +269,12 @@
         },
         //确认删除
         SaveDel_fn(){
-          let param = {itemId:this.Deldata_Fid,sysIds:this.chenkbox2};
+          let arr = this.chenkbox2.filter(function(x){
+            if(x.length<10){
+              return true;
+            }
+          })
+          let param = {itemId:this.Deldata_Fid,sysIds:arr};
           console.log(param)
           this.$http.axiospost("/duty/removeSystemFromMoudle",param).then((res)=>{
               if(res.data){
@@ -272,7 +289,7 @@
 
         //取消删除
         CloseDel_fn(){
-          this.$refs.model2.style="display:none";
+          this.$refs.model2.style.display="none";
         },
         Save_fn(item,event){
             console.log(item);
@@ -398,10 +415,16 @@
                   float: left;
                   padding: 20px;
                   margin: 20px;
+                  cursor: pointer;
                   .zhiban1{
                       display: inline-block;
                      width: 68px;height: 73px;
                      background:url("../../image/zhiban1.png") 
+                  }
+                  .zhiban2{
+                      display: inline-block;
+                     width: 68px;height: 73px;
+                     background:url("../../image/zhiban2.png") 
                   }
               }
           }
@@ -524,16 +547,19 @@
   <style>
     #dutyhome .el-tree{
       background: #101526;
+      color:#ffffff;
     }
     #dutyhone .el-input{
         width: 300px;
     }
 
  .el-tree-node:focus>.el-tree-node__content {
-        background-color: #101526;
+        background-color: #101526 !important;
     }
  .el-tree-node__content:hover {
-        background-color:#101526;
+        background-color:#101526 !important;
     }
-
+    .el-tree-node .is-expanded .is-focusable{
+      background-color: #101526 !important;
+    }
   </style>
