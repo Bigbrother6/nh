@@ -107,9 +107,8 @@
         <!-- 分派 -->
     </div>
 </template>
-      
       <script>
-      
+      import Crypto from 'crypto'
         export default {
           name:'',
           props:[''],
@@ -147,7 +146,19 @@
             console.log(this.operate)
             let ip = sessionStorage["TopIp"];
             let id = sessionStorage["TopId"];
-            this.getData(ip,id);
+         
+           console.log(ip);
+            //md5加密
+            // const md5 = Crypto.createHash('md5')
+            // md5.update(ip);
+            // let zip = md5.digest("hex");
+            // console.log(zip)
+            //this.getData(zip,id);
+            
+            //base64加密
+            let zip = btoa(ip);
+            console.log(zip);
+            this.getData(zip,id);
         },
         methods:{
             //获取页面数据

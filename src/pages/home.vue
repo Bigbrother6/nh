@@ -29,7 +29,6 @@ import store from '../store/index.js';
     data () {
       return {
           time:"", //时间
-          sysNun:{},
           Menu:[],//菜单
           active:"",
           
@@ -171,10 +170,19 @@ import store from '../store/index.js';
           let param={};
           this.$http.get("/home/getNavData",param).then((res)=>{  
               this.Menu=res.data;
+              //一级排序
               this.Menu.sort((a, b) => {
                   return (a.order + '') > (b.order + '')? 1 : -1;
               })
-  
+              //二级排序
+              for(var i=0;i<this.Menu.length;i++){
+                if(this.Menu[i].children.length!=0){
+                    this.Menu[i].children.sort((a,b)=>{
+                    return (a.id + '') > (b.id + '')? 1 : -1;
+                  })
+                }
+
+              }
                 //默认首页权限
                 this.active=sessionStorage['active'];
                 this.operate=sessionStorage["operate"];

@@ -279,12 +279,14 @@
   }
   .sysname{
     text-align: center;
-    margin-top:35px;
+    margin-top:31px;
+    font-size:22px;
     font-weight: 600;
   }
   .sysnum{
     text-align: center;
     font-weight: 600;
+    font-size:18px;
   }
   .system .gao{
     background:#ef3a32;
