@@ -1,8 +1,9 @@
 var realTimeClData;
-var systemDropdown=''
-var monitorUrl=window.g.dev_url;
-//var monitorUrl='http://192.168.34.174:8080/smp-monitor';
+var systemDropdown = ''
+var monitorUrl = window.g.dev_url;
+// var monitorUrl='http://192.168.34.174:8080/smp-monitor';
 $(function() {
+	getDeptList()
 	// 1.初始化Table
 	var oTable = new TableInit();
 	oTable.Init();
@@ -10,15 +11,37 @@ $(function() {
 	// 2.初始化事件
 	var oButtonInit = new ButtonInit();
 	oButtonInit.Init();
-	/*  $("#datetimepicker1").datetimepicker({
-						format: 'yyyy-mm-dd hh:ii:ss',
-						   autoclose: 1,
-						   todayHighlight: 1,//今天高亮
-						   todayBtn: true,
-						   language:'zh-CN'
-						})*/
-		
+	/*
+	 * $("#datetimepicker1").datetimepicker({ format: 'yyyy-mm-dd hh:ii:ss',
+	 * autoclose: 1, todayHighlight: 1,//今天高亮 todayBtn: true, language:'zh-CN' })
+	 */
+
 });
+
+
+// 获取部门列表
+function getDeptList(){
+	$.ajax({
+		type : "post",// 使用get方法访问后台
+		dataType : "json",// 返回json格式的数据
+		contentType : "application/json;charset:utf-8",
+		url : monitorUrl + '/duty/getDeptList',// 要访问的后台地址
+		success : function(data) {
+			if (data.code === "200") {
+				var depts=data.data
+				var len=depts.length
+				$('#txt_search_dept').html('')
+				for(var i=0;i<len;i++){
+					var item='<option attr-id='+depts[i].deptId+'>'+depts[i].dept+'</option>';
+					$('#txt_search_dept').append(item)
+				}
+				
+			} else {
+				alert("获取监控信息失败，原因：" + data.message);
+			}
+		}
+	});
+}
 
 /**
  * 初始化table
@@ -28,7 +51,7 @@ var TableInit = function() {
 	// 初始化Table
 	oTableInit.Init = function() {
 		$('#tb_departments').bootstrapTable({
-			url : monitorUrl+'/monitor/queryTaskList', // 请求后台的URL（*）
+			url : monitorUrl + '/monitor/queryTaskList', // 请求后台的URL（*）
 			method : 'post', // 请求方式（*）
 			dataType : "json", // 从服务端接收数据类型定义
 			toolbar : '#toolbar', // 工具按钮用哪个容器
@@ -59,74 +82,80 @@ var TableInit = function() {
 				field : 'id',
 				title : '监控id',
 				width : '9%',
-				align:'center',
+				align : 'center',
 				visible : false,
 				formatter : format
 			}, {
 				field : 'name',
 				title : '监控名称',
-				width : '10%',
-				align:'center',
+				width : '7%',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'type',
 				title : '监控类型',
-				width : '7%',
-				align:'center',
+				width : '5%',
+				align : 'center',
 				formatter : typeHandle
 			}, {
 				field : 'sys_name',
 				title : '应用系统名称',
 				width : '9%',
-				align:'center',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'ip',
 				title : '被监控对象ip/域名',
 				width : '10%',
-				align:'center',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'url',
 				title : '监控地址',
 				width : '19%',
-				align:'center',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'rate',
 				title : '监控频率',
 				width : '5%',
-				align:'center',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'repeatflag',
 				title : '重复确认',
 				width : '5%',
-				align:'center',
+				align : 'center',
 				formatter : flagHandle
 			}, {
 				field : 'state',
 				title : '运行状态',
 				width : '5%',
-				align:'center',
+				align : 'center',
 				formatter : stateHandle
+			},{
+				field : 'dept',
+				title : '部门',
+				width : '5%',
+				align : 'center',
+				formatter : format
 			}, {
 				field : 'linkperson',
 				title : '责任人',
 				width : '5%',
-				align:'center',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'remark',
 				title : '备注',
 				width : '19%',
-				align:'center',
+				align : 'center',
 				formatter : format
 			}, {
 				field : 'state',
 				title : '操作',
 				width : '4%',
-				align:'center',
+				align : 'center',
 				formatter : operationHandle
 			} ]
 		});
@@ -140,59 +169,69 @@ var TableInit = function() {
 			query_name : $("#txt_search_name").val(),
 			app_name : $("#txt_search_appname").val(),
 			query_state : $("#txt_search_state").val(),
-			query_type : $("#txt_search_type").val()
+			query_type : $("#txt_search_type").val(),
+			deptName:$("#txt_search_dept").find("option:selected").text(),
+			deptId:$("#txt_search_dept").find("option:selected").attr('data-id')
 		};
 	};
 	return oTableInit;
 };
 
 // 获取系统下拉列表
-function  setSystemList(sys){
-	$.ajax({
-		url :monitorUrl+'/duty/getSystemList',
-		dataType : 'json',
-		type : 'get',
-		async : false,
-		success : function(data) {
-			if (data.code === "200") {
-				var arr=data.data
-				var len=arr.length
-				var newArr=[]
-				var seleced=''
-				for(var i=0;i<len;i++){
-					var item={}
-					item.id=arr[i].id
-					item.name=arr[i].sysName
-					if(sys){
-						if(arr[i].sysName==sys){
-							item.selected=true
-							seleced=sys
-						}
-					}else{
-						if(i==0){
-							item.selected=true
-							seleced=item.name
-						}
-					}
-					newArr.push(item)
-				}
-				if(systemDropdown!=''){
-					systemDropdown.destroy()
-				}
-				$('#relationSystem').attr('title',seleced)
-				systemDropdown=$('#relationSystem').dropdown({
-							data: newArr,
-							input: '<input type="text" maxLength="20" placeholder="请输入搜索">',
-							choice: function() {
-								$('#relationSystem').attr('title',$('#relationSystem .dropdown-selected').text())
+function setSystemList(sys) {
+	$
+			.ajax({
+				url : monitorUrl + '/duty/getSystemList',
+				dataType : 'json',
+				type : 'get',
+				async : false,
+				success : function(data) {
+					if (data.code === "200") {
+						var arr = data.data
+						var len = arr.length
+						var newArr = []
+						var seleced = ''
+						for (var i = 0; i < len; i++) {
+							var item = {}
+							item.id = arr[i].id
+							item.name = arr[i].sysName
+							if (sys) {
+								if (arr[i].sysName == sys) {
+									item.selected = true
+									seleced = sys
+								}
+							} else {
+								if (i == 0) {
+									item.selected = true
+									seleced = item.name
+								}
 							}
-						}).data('dropdown');
-				
-			} else {
-				alert("获取监控信息失败，原因：" + data.message);
-			}
-		}
-	})
+							newArr.push(item)
+						}
+						if (systemDropdown != '') {
+							systemDropdown.destroy()
+						}
+						$('#relationSystem').attr('title', seleced)
+						systemDropdown = $('#relationSystem')
+								.dropdown(
+										{
+											data : newArr,
+											input : '<input type="text" maxLength="20" placeholder="请输入搜索">',
+											choice : function() {
+												$('#relationSystem')
+														.attr(
+																'title',
+																$(
+																		'#relationSystem .dropdown-selected')
+																		.text())
+											}
+										}).data('dropdown');
+
+					} else {
+						alert("获取监控信息失败，原因：" + data.message);
+					}
+				}
+			})
 }
 
 /**
@@ -257,7 +296,7 @@ var ButtonInit = function() {
 							query_id : arrselections[0].id
 						}),
 						contentType : "application/json;charset:utf-8",
-						url : monitorUrl+'/monitor/queryTaskById',// 要访问的后台地址
+						url : monitorUrl + '/monitor/queryTaskById',// 要访问的后台地址
 						success : function(data) {
 							if (data.code === "200") {
 								supply(data.data);
@@ -297,7 +336,7 @@ var ButtonInit = function() {
 								dataType : "json",// 返回json格式的数据
 								data : JSON.stringify(query),
 								contentType : "application/json;charset:utf-8",
-								url : monitorUrl+"/monitor/deleteByIds",// 要访问的后台地址
+								url : monitorUrl + "/monitor/deleteByIds",// 要访问的后台地址
 								success : function(data) {
 									if (data.code === "200") {
 										alert("删除成功");
@@ -311,7 +350,33 @@ var ButtonInit = function() {
 						}
 					})
 				});
-
+		// 全部导出
+		$('#btn_batch_export').on('click',function(){
+				var idsArray = [];
+					/*var arrselections = $("#tb_departments").bootstrapTable(
+							'getSelections');
+					if (arrselections.length <= 0) {
+						alert('请选择要导出的数据');
+						return;
+					}
+					for (var i = 0; i < arrselections.length; i++) {
+						idsArray[i] = arrselections[i].id;
+					}
+					var query = idsArray.join(',')*/
+					var queryParams={}
+					queryParams.query_name = $("#txt_search_name").val(),
+					queryParams.app_name = $("#txt_search_appname").val(),
+					queryParams.query_state = $("#txt_search_state").val(),
+					queryParams.query_type = $("#txt_search_type").val(),
+					queryParams.deptName=$("#txt_search_dept").find("option:selected").text(),
+			        queryParams.deptId=$("#txt_search_dept").find("option:selected").attr('data-id')
+					var info = JSON.stringify(queryParams);
+					console.log(info)
+//					window.location.href=monitorUrl+'/monitor/exportMonitorTask?model='+ encodeURIComponent(info)
+					window.location.href=monitorUrl+'/monitor/exportMonitorTask?query_name='+encodeURI(encodeURI(queryParams.query_name))
+					+'&&app_name='+encodeURI(encodeURI(queryParams.app_name))+'&&query_state='+encodeURI(encodeURI(queryParams.app_name))
+					+'&&query_type='+encodeURI(encodeURI(queryParams.app_name))+'&&deptName='+encodeURI(encodeURI(queryParams.app_name));
+		});
 		// 关闭窗口
 		$('#myModal').on('hide.bs.modal', function() {
 			$("#task")[0].reset();
@@ -323,12 +388,12 @@ var ButtonInit = function() {
 			$('#fileNum').hide();
 			$('#fileMonitorType').hide();
 			$('#fileEndTime').flatpickr({
-					time_24hr:true,
-					noCalendar: true,
-					dateFormat: "H:i",
-					allowInput:true,
-					minTime:'00:00'
-				});
+				time_24hr : true,
+				noCalendar : true,
+				dateFormat : "H:i",
+				allowInput : true,
+				minTime : '00:00'
+			});
 		});
 
 		// 类型联动
@@ -367,7 +432,7 @@ var ButtonInit = function() {
 				tcpInfo.hide();
 				taskInfo.hide();
 				dubboInfo.hide();
-			} else if ("email" === type) {
+			} else if ("mail" === type) {
 				urlInfo.hide();
 				dbInfo.hide();
 				fileInfo.hide();
@@ -391,7 +456,7 @@ var ButtonInit = function() {
 				tcpInfo.show();
 				taskInfo.hide();
 				dubboInfo.hide();
-			} else if("dubbo" === type){ //新增
+			} else if ("dubbo" === type) { // 新增
 				dubboInfo.show();
 				urlInfo.hide();
 				dbInfo.hide();
@@ -399,7 +464,7 @@ var ButtonInit = function() {
 				emailInfo.hide();
 				tcpInfo.hide();
 				taskInfo.hide();
-			}else{
+			} else {
 				urlInfo.hide();
 				dbInfo.hide();
 				fileInfo.hide();
@@ -433,45 +498,44 @@ var ButtonInit = function() {
 				ftpMessage.hide();
 			}
 		});
-		$('#file_monitor_type').change(function(){
-			var file_monitor_type=$('#file_monitor_type').val();
-			if(file_monitor_type=='1'){
+		$('#file_monitor_type').change(function() {
+			var file_monitor_type = $('#file_monitor_type').val();
+			if (file_monitor_type == '1') {
 				$('#fileRetentTime').show();
 				$('#fileNum').hide();
 				$('#fileMonitorType').hide();
-			}else if(file_monitor_type=='2'){
+			} else if (file_monitor_type == '2') {
 				$('#fileRetentTime').hide();
 				$('#fileNum').show();
 				$('#fileMonitorType').show();
-				
-			
+
 			}
 		});
-		
-			$('#fileStartTime').flatpickr({
-						time_24hr:true,
-						noCalendar: true,
-						dateFormat: "H:i",
-						allowInput:true,
-						maxTime:'23:59',
-					    onClose: function(selectedDates, dateStr, instance){
-					    	$('#fileEndTime').attr('data-min-time',dateStr)
-					    		$('#fileEndTime').flatpickr({
-									time_24hr:true,
-									noCalendar: true,
-									dateFormat: "H:i",
-									allowInput:true,
-									minTime:dateStr
-								});
-					    }
-			});
-			$('#fileEndTime').flatpickr({
-					time_24hr:true,
-					noCalendar: true,
-					dateFormat: "H:i",
-					allowInput:true,
-					minTime:'00:00'
+
+		$('#fileStartTime').flatpickr({
+			time_24hr : true,
+			noCalendar : true,
+			dateFormat : "H:i",
+			allowInput : true,
+			maxTime : '23:59',
+			onClose : function(selectedDates, dateStr, instance) {
+				$('#fileEndTime').attr('data-min-time', dateStr)
+				$('#fileEndTime').flatpickr({
+					time_24hr : true,
+					noCalendar : true,
+					dateFormat : "H:i",
+					allowInput : true,
+					minTime : dateStr
 				});
+			}
+		});
+		$('#fileEndTime').flatpickr({
+			time_24hr : true,
+			noCalendar : true,
+			dateFormat : "H:i",
+			allowInput : true,
+			minTime : '00:00'
+		});
 		var _this;
 		$("#test").click(function() {
 			_this = this;
@@ -615,10 +679,12 @@ function typeHandle(value) {
 		return format("tcp连接监控");
 	} else if ("file" === value) {
 		return format("文件监控");
-	} else if ("email" === value) {
+	} else if ("mail" === value) {
 		return format("邮件监控");
 	} else if ("task" === value) {
 		return format("定时任务监控");
+	} else if ("dubbo" === value) {
+		return format("DUBBO任务监控");
 	}
 }
 
@@ -641,7 +707,7 @@ function start(obj, id) {
 		dataType : "json",// 返回json格式的数据
 		data : JSON.stringify(query),
 		contentType : "application/json;charset:utf-8",
-		url : monitorUrl+"/monitor/startTaskById",// 要访问的后台地址
+		url : monitorUrl + "/monitor/startTaskById",// 要访问的后台地址
 		success : function(data) {
 			if (data.code === "200") {
 				$(obj).removeClass('fa-play-circle-o').addClass(
@@ -672,7 +738,7 @@ function stop(obj, id) {
 		dataType : "json",// 返回json格式的数据
 		data : JSON.stringify(query),
 		contentType : "application/json;charset:utf-8",
-		url : monitorUrl+"/monitor/stopTaskById",// 要访问的后台地址
+		url : monitorUrl + "/monitor/stopTaskById",// 要访问的后台地址
 		success : function(data) {
 			if (data.code === "200") {
 				$(obj).removeClass('fa-pause-circle-o').addClass(
@@ -701,7 +767,8 @@ function check() {
 	var type = $("#type").val();
 	var rate = $("#rate").val();
 	var sys_name = $('#relationSystem .dropdown-selected').text();
-	var sys_id=$('#relationSystem .dropdown-selected').find('.del').attr('data-id');
+	var sys_id = $('#relationSystem .dropdown-selected').find('.del').attr(
+			'data-id');
 	var linkperson = $("#linkperson").val();
 	var repeat_rate = $("#repeat_rate").val();
 	var repeat_num = $("#repeat_num").val();
@@ -741,11 +808,11 @@ function check() {
 	var email_receive_port = $("#email_receive_port").val();
 	var email_send_ssl = $("#email_send_ssl").val();
 	var email_receive_ssl = $("#email_receive_ssl").val();
-	var file_monitor= $("#file_monitor_type").val();
-	var matchChart=$('#match_character').val();
-	var matchRule=$('#match_rule').val();
-	var fileStartTime=$('#fileStartTime').val();
-	var fileEndTime=$('#fileEndTime').val();
+	var file_monitor = $("#file_monitor_type").val();
+	var matchChart = $('#match_character').val();
+	var matchRule = $('#match_rule').val();
+	var fileStartTime = $('#fileStartTime').val();
+	var fileEndTime = $('#fileEndTime').val();
 	if (isEmpty(name)) {
 		alert("请输入监控名称");
 		return;
@@ -820,12 +887,12 @@ function check() {
 			alert('请输入文件服务器地址');
 			return;
 		}
-		if(file_monitor=='1'){
+		if (file_monitor == '1') {
 			if (isEmpty(file_retention)) {
 				alert('请输入文件滞留时间');
 				return;
 			}
-		}else{
+		} else {
 			if (isEmpty(file_num)) {
 				alert('请输入文件个数');
 				return;
@@ -857,7 +924,7 @@ function check() {
 				return;
 			}
 		}
-	} else if ("email" === type) {
+	} else if ("mail" === type) {
 		if (isEmpty(email_ip)) {
 			alert('请输入发件服务器地址');
 			return;
@@ -883,17 +950,17 @@ function check() {
 			alert('请输入定时任务id');
 			return;
 		}
-	}else if("dubbo" === type){
-		if (isEmpty(dubbo_url)) {
+	} else if ("dubbo" === type) {
+		if (isEmpty(interface_class)) {
 			alert('请输入接口服务类');
 			return;
 		}
-		if (isEmpty(interface_class)) {
-			alert('请输入服务注册中心');
-			return;
-		}
+		// if (isEmpty(dubbo_url)) {
+		// alert('请输入服务注册中心');
+		// return;
+		// }
 	}
-file_monitor=file_monitor=='1'?'按滞留时间':'按文件个数'
+	file_monitor = file_monitor;
 	// 拼写结果
 	info.id = emptyToNull(id);
 	info.name = emptyToNull(name);
@@ -936,7 +1003,7 @@ file_monitor=file_monitor=='1'?'按滞留时间':'按文件个数'
 		info.matchRule = emptyToNull(matchRule);
 		info.fileStartTime = emptyToNull(fileStartTime);
 		info.fileEndTime = emptyToNull(fileEndTime);
-	} else if ("email" === type) {
+	} else if ("mail" === type) {
 		info.ip = emptyToNull(email_ip);
 		info.port = emptyToNull(email_port);
 		info.receive_ip = emptyToNull(email_receive_ip);
@@ -948,7 +1015,7 @@ file_monitor=file_monitor=='1'?'按滞留时间':'按文件个数'
 	} else if ("task" === type) {
 		info.ip = emptyToNull(task_ip);
 		info.other_sys_id = emptyToNull(task_other_sys_id);
-	}else if("dubbo"===type){
+	} else if ("dubbo" === type) {
 		info.url = emptyToNull(dubbo_url);
 		info.interface_class = emptyToNull(interface_class);
 	}
@@ -966,7 +1033,7 @@ function save() {
 			dataType : "json",// 返回json格式的数据
 			data : JSON.stringify(result),
 			contentType : "application/json;charset:utf-8",
-			url : monitorUrl+"/monitor/addTask",// 要访问的后台地址
+			url : monitorUrl + "/monitor/addTask",// 要访问的后台地址
 			success : function(data) {
 				if (data.code === "200") {
 					$('#myModal').modal('hide');
@@ -990,7 +1057,7 @@ function update() {
 			dataType : "json",// 返回json格式的数据
 			data : JSON.stringify(result),
 			contentType : "application/json;charset:utf-8",
-			url : monitorUrl+"/monitor/updateTask",// 要访问的后台地址
+			url : monitorUrl + "/monitor/updateTask",// 要访问的后台地址
 			success : function(data) {
 				if (data.code === "200") {
 					$('#myModal').modal('hide');
@@ -1012,7 +1079,7 @@ function supply(task) {
 	$("#name").val(task.name);
 	$("#type").val(task.type).trigger('change');// 触发选择类型事件
 	$("#rate").val(task.rate);
-//	$('#relationSystem .dropdown-selected').text(task.sys_name);
+	// $('#relationSystem .dropdown-selected').text(task.sys_name);
 	$("#linkperson").val(task.linkperson);
 	$("#timeout").val(task.timeout);
 	$("#repeatflag").val(task.repeatflag).trigger('change');
@@ -1035,23 +1102,23 @@ function supply(task) {
 		$("#file_ip").val(task.ip);
 		$("#file_port").val(task.port);
 		$("#file_file_type").val(task.file_type).trigger('change');
-		var fileType=task.fileMonitorType=='按滞留时间'?'1':'2'
+		var fileType = task.fileMonitorType;
 		$("#file_monitor_type").val(fileType).trigger('change');
 		$("#match_character").val(task.matchChart);
 		$("#match_rule").val(task.matchRule);
 		$("#fileStartTime").val(task.fileStartTime);
 		$("#fileEndTime").val(task.fileEndTime);
-		
+
 		$("#file_url").val(task.url);
 		$("#file_username").val(task.username);
-		$("#file_num").val(task.num);
+		$("#file_num").val(task.file_num);
 		if (task.file_type === "2") {
 			$("#file_password").val("");
 		} else {
 			$("#file_password").val(task.password);
 		}
 		$("#file_retention").val(task.retention);
-	} else if (type === "email") {
+	} else if (type === "mail") {
 		$("#email_ip").val(task.ip);
 		$("#email_port").val(task.port);
 		$("#email_receive_ip").val(task.receive_ip);
@@ -1063,7 +1130,7 @@ function supply(task) {
 	} else if (type === "task") {
 		$("#task_ip").val(task.ip);
 		$("#task_other_sys_id").val(task.other_sys_id);
-	}else if(type==="dubbo"){
+	} else if (type === "dubbo") {
 		$("#dubbo_url").val(task.url);
 		$("#interface_class").val(task.interface_class);
 	}
@@ -1081,7 +1148,7 @@ function test() {
 			dataType : "json",// 返回json格式的数据
 			data : JSON.stringify(result),
 			contentType : "application/json;charset:utf-8",
-			url : monitorUrl+"/monitor/testTask",// 要访问的后台地址
+			url : monitorUrl + "/monitor/testTask",// 要访问的后台地址
 			success : function(data) {
 				if (data.code === "200") {
 					alert("测试成功");

@@ -21,11 +21,16 @@
           <b @click="Save_fn(item,$event)" class="save"></b>
         </p>
         <div class="temp1" v-for="items in item.data">
-            <el-tooltip class="item" effect="dark" :content="items.sysName" placement="top-start">
-              <i @click="jump(items)" :class="items.sysAlarmNum>0 ? zhiban1 : zhiban2"></i>
-            </el-tooltip>
-            <p>{{items.abbreviation}}</p>
-            <p v-if="items.abbreviation=='' || items.abbreviation==undefined">{{items.sysName}}</p> 
+            <!-- <el-tooltip class="item" effect="dark" :content="items.sysName" placement="top-start">
+              <i @click="jump(items)" :class="items.sysAlarmNum>0 ? zhiban1 : zhiban2">
+                <p class="jian">{{items.abbreviation}}</p>
+              </i>
+            </el-tooltip> -->
+            <i @click="jump(items)" :class="items.sysAlarmNum>0 ? zhiban2 : zhiban1">
+              <p class="jian">{{items.abbreviation}}</p>
+            </i>
+            <p class="zhong">{{items.sysName}}</p> 
+            <!-- <p v-if="items.abbreviation=='' || items.abbreviation==undefined">{{items.sysName}}</p>  -->
         </div>
     </div>
     <!-- 模套框1-->
@@ -193,8 +198,19 @@
         // 获取模板
         getTemp_fn(id){
           let param={id:id};
-          this.$http.get("/duty/getDutyTemplateModuleModel",param).then((res)=>{
+          this.$http.get("/duty/getDutyTemplateModuleModel?time="+new Date().getTime(),param).then((res)=>{
               this.dutylist=res.data;
+              //二级排序
+              for(var i=0;i<this.dutylist.length;i++){
+                if(this.dutylist[i].data.length!=0){
+                  this.dutylist[i].data.sort((a,b)=>{
+                    return (a.sysAlarmNum + '') < (b.sysAlarmNum + '')? 1 : -1;
+                  })
+                }
+
+              }
+
+
           })
         },
         //获取树形数据
@@ -413,19 +429,28 @@
               .temp1{
                   text-align: center;
                   float: left;
-                  padding: 20px;
-                  margin: 20px;
+                  width: 120px;
+                  height: 120px;
+                 
+                  margin: 10px;
                   cursor: pointer;
                   .zhiban1{
                       display: inline-block;
-                     width: 68px;height: 73px;
+                     width: 64px;height: 64px;
                      background:url("../../image/zhiban1.png") 
                   }
                   .zhiban2{
                       display: inline-block;
-                     width: 68px;height: 73px;
+                     width: 64px;height: 64px;
                      background:url("../../image/zhiban2.png") 
                   }
+              }
+              .jian{
+                margin-top: 40px;
+                font-size: 13px;
+              }
+              .zhong{
+                font-size: 17px;
               }
           }
           .title{

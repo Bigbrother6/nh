@@ -23,6 +23,7 @@ if (process.env.NODE_ENV === "development") {
 axios.defaults.timeout = 20000;
 axios.defaults.withCredentials = false
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
+  
 axios.defaults.params = {};
 // 添加请求拦截器
 axios.interceptors.request.use(config => {

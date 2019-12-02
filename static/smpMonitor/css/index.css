@@ -19,7 +19,6 @@ body {
 
 .panel>.panel-body {
 	background: #101526;
-	padding:10px;
 }
 
 .panel-default {
@@ -35,7 +34,6 @@ body {
 	background: #1d2437;
 	color: #fff;
 	border-color: #555;
-	cursor: pointer;
 }
 
 .form-group input:focus,
@@ -327,4 +325,10 @@ button.close {
 }
 .glyphicon{
 	color:#3f8def;
+}
+.search_input{
+	width:11.6666%
+}
+.form-control{
+	padding: 6px 6px 6px 12px;
 }

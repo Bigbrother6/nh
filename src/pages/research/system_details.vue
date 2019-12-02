@@ -55,8 +55,8 @@
               <em class="btn add" @click="jumpAlarm()" v-if="operate.monitor==1">添加监控</em>
         </p>
         <transition name="fade">
-            <div class="clearfix top">
-                <div v-for="item in TopSys" v-show="show1">
+            <div class="clearfix top" v-show="show1">
+                <div v-for="item in TopSys">
                     <i :class="item.alarmNum>0 ? red1:blue1" @click="jumpTop(item)"></i>
                     <p>{{item.ip}}</p>
                 </div>
@@ -369,6 +369,10 @@
     background:#101526;
     margin-top:10px;
     padding: 10px;
+   
+  }
+  .top{
+    min-height: 400px;
   }
   .row2>.top>div{
     float: left;

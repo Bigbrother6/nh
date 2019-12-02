@@ -14,7 +14,7 @@
               <span>{{time}}</span>
               <img src="../image/touxiang.png" alt="">
               <span>{{user}}</span>
-              <!-- <span class="quit"></span> -->
+              <a href="http://smptest.csair.com/ucas/logout?service=tyNFq5dXMkqNEx3GFqyAUdE8dUBqRQoNigJrPDtbFitX3jPFpqci6N2xEfNLurs6AiMGe9mhJYwEheLX8AKbbqG9zTDq6WcoJLRsVS8VPHSA9SjmxPGotMPj" class="quit"></a>
           </div>
     </div>
     <router-view></router-view>
@@ -43,9 +43,13 @@ import store from '../store/index.js';
   
     },
     watch: {
-      '$route' (to, from) {
-        this.$router.go(0);
-      }
+       '$route' (to, from) {
+          console.log(to);   //新的
+          console.log(from);//之前的
+          if(to.name=="research"){
+            this.active=2;
+          }
+        }
     },
     created() {
       this.getDate();
@@ -121,10 +125,10 @@ import store from '../store/index.js';
           }else if(item.label=="研发处"){
               sessionStorage['active']=2;
               sessionStorage["SysId"]=0;
-              sessionStorage["SysName"]=0;
+              sessionStorage["SysName"]='各大系统';
               sessionStorage["operate"]=JSON.stringify(item.operate);
 
-            this.$router.push({path:'/research',query:{name:item.label}});
+              this.$router.push({path:'/research',query:{name:item.label}});
           }else if(item.label=="值班"){
           
           }else if(item.label=="配置管理"){
@@ -168,12 +172,13 @@ import store from '../store/index.js';
       
         getNav_fn(){
           let param={};
-          this.$http.get("/home/getNavData",param).then((res)=>{  
+          this.$http.get("/home/getNavData?time="+new Date().getTime()).then((res)=>{  
               this.Menu=res.data;
-              //一级排序
+              //一级排序 从小到大
               this.Menu.sort((a, b) => {
                   return (a.order + '') > (b.order + '')? 1 : -1;
               })
+              console.log(this.Menu)
               //二级排序
               for(var i=0;i<this.Menu.length;i++){
                 if(this.Menu[i].children.length!=0){
@@ -205,7 +210,7 @@ import store from '../store/index.js';
           })
         }
         
-        },
+      },
   }
 
 </script>
@@ -303,5 +308,7 @@ import store from '../store/index.js';
     background: url("../image/quit.png") no-repeat 0px 0px;
     position: relative;
     top: 13px;
+    right: -40px;
+    cursor: pointer;
 }
 </style>

@@ -98,7 +98,7 @@
         show:true,
         data: [{name: '模板分类',id:0,children:[]}],
         defaultProps: {children: 'children',label: 'name'},
-        tempdata:[],
+        tempdata:"",
         dialogTableVisible:false,
         tempName:"",
         tempDesc:"",
@@ -131,7 +131,16 @@
       console.log(w);
       console.log(h)
     },
-
+    watch:{
+        tempdata:{
+          handler(newValue,oldValue){
+            console.log(666)
+              console.log(news);
+                console.log(old);
+          },
+          deep:true 
+        },
+    },
     methods: {
       handleNodeClick(data) {
         console.log(data);
@@ -146,16 +155,20 @@
       },
       // 获取模板
       getTemp_fn(){
+        
         let param={};
-        this.$http.get("/configure/getTemplateModel").then((res)=>{
+        let url="/configure/getTemplateModel?time="+new Date().getTime();
+        this.$http.get(url).then((res)=>{
             this.data[0].children=res.data;
             this.tempdata=res.data;
+
+            console.log(this.tempdata);
         })
       },
       //获取子模板
       getTempChild_fn(id){
         let param={id:id};
-        this.$http.get("/configure/getTemplateModuleModel",param).then((res)=>{
+        this.$http.get("/configure/getTemplateModuleModel?time="+new Date().getTime(),param).then((res)=>{
             if(res.data.length!=0){
               this.templist=res.data;
             }else{
@@ -190,8 +203,11 @@
           }
           this.$http.axiospost("/configure/addTemplateModel",param).then((res)=>{
               if(res.data){
+                // this.tempdata=[];
+                console.log(this.tempdata)
                 this.$message({message: '恭喜你，操作成功',type: 'success'});
-                this.getTemp_fn()
+                this.getTemp_fn();
+                
                 this.dialogTableVisible = false;
               }else{
                 this.$message.error('错了哦，添加失败');

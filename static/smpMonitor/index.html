@@ -19,7 +19,8 @@
 <script src="js/jquery/jquery-3.2.1.js"></script>
 <script type="text/javascript" src="js/flatpickr-v4/flatpickr.min.js" ></script>
 <!-- 2.bootstrap组件引用 -->
-<script src="js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<!--<script src="js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>-->
+<script type="text/javascript" src="js/bootstrap-3.3.7-dist/js/bootstrap.min.js" ></script>
 <!-- 3.bootstrap table组件以及中文包的引用-->
 <script src="js/bootstrap-table-1.12.1-dist/bootstrap-table.min.js"></script>
 <script src="js/bootstrap-table-1.12.1-dist/bootstrap-table-zh-CN.min.js"></script>
@@ -51,20 +52,6 @@
     border-radius: 0;
     background: rgba(0,0,0,0.1);
 }
-body{
-    /*三角箭头的颜色*/
-    scrollbar-arrow-color: #1A2031;
-    /*滚动条滑块按钮的颜色*/
-    scrollbar-face-color: #141825;
-     /*滚动条整体颜色*/
-    scrollbar-highlight-color:#1A2031;
-    /*滚动条阴影*/
-    scrollbar-shadow-color:#1A2031;
-    /*滚动条轨道颜色*/
-    scrollbar-track-color: #1A2031;
-    /*滚动条基准颜色*/
-    scrollbar-base-color:#1A2031;
-}
 </style>
 </head>
 <body>
@@ -81,15 +68,14 @@ body{
 				<form id="formSearch" class="form-horizontal">
 					<div class="form-group" style="margin-top: 15px">
 						<label class="control-label col-sm-1" for="txt_search_name">监控名称：</label>
-						<div class="col-sm-2">
-							<input type="text" class="form-control close_value" required="required"
+						<div class="col-sm-2 search_input">
+							<input type="text" class="form-control close_value"
 								id="txt_search_name" title="请输入要查询的关键字，支持模糊查询" placeholder="请输入关键字">
 							<div class="close_icon">
-								<!--<img src="images/close.png" />-->
 							</div>
 						</div>
 						<label class="control-label col-sm-1" for="txt_search_appname">系统名称：</label>
-						<div class="col-sm-2">
+						<div class="col-sm-2 search_input">
 							<input type="text" required="required" class="form-control close_value"
 								id="txt_search_appname" title="请输入要查询的关键字，支持模糊查询" placeholder="请输入关键字">
 							<div class="close_icon">
@@ -97,7 +83,7 @@ body{
 							</div>
 						</div>
 						<label class="control-label col-sm-1" for="txt_search_type">监控类型：</label>
-						<div class="col-sm-2">
+						<div class="col-sm-2 search_input">
 							<select class="form-control" id="txt_search_type">
 								<option value="" style="color：#1D2437">请选择</option>
 								<option value="url">URL页面监控</option>
@@ -105,22 +91,33 @@ body{
 								<option value="db">数据库监控</option>
 								<option value="tcp">tcp连接监控</option>
 								<option value="file">文件监控</option>
-								<option value="email">邮件监控</option>
+								<option value="mail">邮件监控</option>
 								<option value="task">定时任务监控</option>
 								<option value="dubbo">DUBBO监控</option>
 							</select>
 						</div>
 						<label class="control-label col-sm-1" for="txt_search_state">监控状态：</label>
-						<div class="col-sm-2">
+						<div class="col-sm-2 search_input">
 							<select class="form-control" id="txt_search_state">
 								<option value="">请选择</option>
 								<option value="Y">运行</option>
 								<option value="N">停止</option>
 							</select>
 						</div>
+						<label class="control-label col-sm-1" for="txt_search_name">部门名称：</label>
+						<div class="col-sm-2 search_input">
+							<!--<input type="text" class="form-control close_value" required="required"
+								id="txt_part_name" title="请输入要查询的关键字，支持模糊查询" placeholder="请输入关键字">
+							<div class="close_icon">-->
+							<select class="form-control" id="txt_search_dept">
+								<!--<option data-id="1">111</option>
+								<option data-id="3">112</option>-->
+							</select>
+							</div>
+						</div>
 						<br /> <br /> <br /> 
 						<div class="col-sm-12" style="text-align: center;">
-							<button type="button" style="margin-left: 100px; width: 100px"
+							<button type="button" style=" width: 120px;"
 								id="btn_query" class="btn btn-primary">查询</button>
 						</div>
 					</div>
@@ -141,6 +138,9 @@ body{
 			</button>
 			<button id="btn_batch_import" type="button" class="btn btn-default">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true">批量导入</span>
+			</button>
+			<button id="btn_batch_export" type="button" class="btn btn-default">
+				<span class="glyphicon glyphicon-save" aria-hidden="true">全部导出</span>
 			</button>
 		</div>
 
@@ -246,7 +246,7 @@ body{
 												class="must">*</span>监控名称</label>
 											<div class="col-sm-2 length-2">
 												<input type="text" class="form-control" id="name"
-													title="监控名称">
+													title="监控名称" />
 											</div>
 											<label class="control-label col-sm-2 length-1" for="type"><span
 												class="must">*</span>监控类型</label>
@@ -258,7 +258,7 @@ body{
 													<option value="db">数据库监控</option>
 													<option value="tcp">tcp连接监控</option>
 													<option value="file">文件监控</option>
-													<option value="email">邮件监控</option>
+													<option value="mail">邮件监控</option>
 													<option value="task">定时任务监控</option>
 													<option value="dubbo">DUBBO监控</option>
 												</select>
@@ -397,7 +397,7 @@ body{
 												for="db_password"><span class="must">*</span>密码</label>
 											<div class="col-sm-2 length-2">
 												<input type="password" class="form-control" id="db_password"
-													autocomplete="new-password" title="请输入数据库密码">
+													 title="请输入数据库密码">
 											</div>
 											<label class="control-label col-sm-2 length-1" for="db_sql"><span
 												class="must">*</span>数据库表名</label>
@@ -506,7 +506,7 @@ body{
 												<label class="control-label col-sm-2 length-1"
 													for="file_password"><span class="must">*</span>ftp密码</label>
 												<div class="col-sm-2 length-2">
-													<input type="password" autocomplete="new-password"
+													<input type="password" 
 														class="form-control" id="file_password" title="请输入ftp密码">
 												</div>
 											</div>
@@ -522,11 +522,11 @@ body{
 												
 												<div class="col-sm-2 length-2">
 													<select class="form-control" id="match_rule">
-														<option value="大于">大于</option>
-														<option value="小于">小于</option>
-														<option value="等于">等于</option>
-														<option value="大于等于">大于等于</option>
-														<option value="小于等于">小于等于</option>
+														<option value="1">大于</option>
+														<option value="2">小于</option>
+														<option value="3">等于</option>
+														<option value="4">大于等于</option>
+														<option value="5">小于等于</option>
 													</select>
 												</div>
 											</div>
@@ -615,7 +615,7 @@ body{
 												for="email_password"><span class="must">*</span>邮箱密码</label>
 											<div class="col-sm-2 length-2">
 												<input type="password" class="form-control"
-													autocomplete="new-password" id="email_password">
+													 id="email_password">
 											</div>
 										</div>
 									</div>

@@ -89,14 +89,20 @@
       <div id="researchindex">
         <p class="title"><i></i><span>{{name}}</span></p>
         <div class="system">
-          <div :class="{gao:item.sysAlarmNum>0}" v-for="item in sys" @click="jump(item.id)" class="tip">
-                  <h4 class="sysname">{{item.abbreviation}}</h4>
+          <div v-for="item in sys" @click="jump(item.id)" class="tip">
+              <div :class="{gao:item.sysAlarmNum>0}" class="box2">
+                <p class="sysname">{{item.abbreviation}}</p>
+                <h5 class="sysnum">{{item.sysAlarmNum}}</h5>
+              </div>
+              <p class="zsysname">{{item.sysName}}</p>
+              <!-- <h4 class="sysname">{{item.abbreviation}}</h4>
                   <h4 class="sysname" v-if="item.abbreviation=='' || item.abbreviation==undefined">{{item.sysName}}</h4>
                   <h5 class="sysnum">{{item.sysAlarmNum}}</h5>
-                  <div class="tipbox">
+                  <p>{{item.sysName}}</p> -->
+                  <!-- <div class="tipbox">
                     <div class="tipbox2"></div>
                     <span>{{item.sysName}}</span>
-                  </div>
+                  </div> -->
           </div>
         </div>
       </div>
@@ -125,9 +131,9 @@
       };
     },
     watch: {
-    // '$route' (to, from) {
-    //     this.$router.go(0);
-    // }
+       '$route' (to, from) {
+           this.$router.go(0);
+       }
 },
     
     components:{
@@ -142,11 +148,7 @@
         if(id==0){
           id=null
         }
-        if(name==0){
-          this.name="各大系统"
-        }else{
-          this.name=name;
-        }
+        this.name=name;
         console.log(id);
         console.log(name)
         this.getdata_fn(id);
@@ -198,7 +200,12 @@
           let param={deptId:id};
           this.$http.get("/department/getDepartmentSysAlarmMsg",param).then(res=>{
             this.sys=res.data;
+            this.sys.sort((a,b)=>{
+              return (a.sysAlarmNum + '') < (b.sysAlarmNum + '')? 1 : -1;
+            })
+            console.log(this.sys)
 
+            
           })
         },
         jump(id){
@@ -269,35 +276,48 @@
       flex-wrap: wrap;
       margin:10px;
   }
-  .system>div{
+  .tip{
     width: 120px;
     height: 120px;
     margin:5px;
-    border-radius: 5px;
-    background:green;
     cursor: pointer;
+  }
+  .box2{
+    width: 120px;
+    height: 90px;
+    background:green;
+    padding-top: 13px;
+    border-radius: 5px;
+    position: relative;
   }
   .sysname{
     text-align: center;
-    margin-top:31px;
-    font-size:22px;
+    font-size:15px;
     font-weight: 600;
+    word-wrap: break-word;
   }
   .sysnum{
-    text-align: center;
     font-weight: 600;
-    font-size:18px;
+    font-size: 17px;
+    margin-top: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: 55px;
+  }
+  .zsysname{
+    text-align: center;
+    font-size:17px;
   }
   .system .gao{
     background:#ef3a32;
   }
- .tip{
+ /* .tip{
    position: relative
  }
  .tip:hover .tipbox{
     display: block;
- }
- .tipbox{
+ } */
+ /* .tipbox{
     position: absolute;
     display:none;
     top: 100px;
@@ -319,5 +339,5 @@
     position: absolute;
     top: -9px;
     left: 26px;
- }
+ } */
 </style>
