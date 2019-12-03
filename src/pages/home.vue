@@ -174,12 +174,12 @@ import store from '../store/index.js';
           let param={};
           this.$http.get("/home/getNavData?time="+new Date().getTime()).then((res)=>{  
               this.Menu=res.data;
-              //一级排序 从小到大
+              //一级排序 从小到大1,2,3,4
               this.Menu.sort((a, b) => {
                   return (a.order + '') > (b.order + '')? 1 : -1;
               })
-              console.log(this.Menu)
-              //二级排序
+              
+              //二级排序从小到大
               for(var i=0;i<this.Menu.length;i++){
                 if(this.Menu[i].children.length!=0){
                     this.Menu[i].children.sort((a,b)=>{
@@ -188,6 +188,12 @@ import store from '../store/index.js';
                 }
 
               }
+             // console.log(this.Menu)
+            //12-03 
+            //  this.$router.push({path:"",query:{}});
+
+
+              
                 //默认首页权限
                 this.active=sessionStorage['active'];
                 this.operate=sessionStorage["operate"];
